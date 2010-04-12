@@ -24,10 +24,7 @@ options(SweaveHooks = list(
 @
 \begin{document}
 \title{kinfit -\\
-Routines for fitting kinetic models to chemical degradation 
-data\footnote{This is a preprint of an article published in
-The R Journal, Volume 1, Number ?, ?--?. available online
-\url{http://journal.r-project.org}.}}
+Routines for fitting kinetic models to chemical degradation data}
 \author{\textbf{Johannes Ranke} \\
 %EndAName
 Product Safety \\
