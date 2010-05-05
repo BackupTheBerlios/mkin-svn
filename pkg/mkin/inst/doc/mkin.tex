@@ -1,0 +1,117 @@
+%%\VignetteIndexEntry{Routines for fitting kinetic models with one or more state variables to chemical degradation data}
+%%VignetteDepends{FME}
+%%\usepackage{Sweave}
+\documentclass[12pt,a4paper]{article}
+\usepackage{a4wide}
+%%\usepackage[lists,heads]{endfloat}
+\input{header}
+\hypersetup{  
+  pdftitle = {mkin - Routines for fitting kinetic models with one or more state variables to chemical degradation data},
+  pdfsubject = {Manuscript},
+  pdfauthor = {Johannes Ranke},
+  colorlinks = {true},
+  linkcolor = {blue},
+  citecolor = {blue},
+  urlcolor = {red},
+  hyperindex = {true},
+  linktocpage = {true},
+}
+
+\begin{document}
+\title{mkin -\\
+Routines for fitting kinetic models with one or more state variables to chemical degradation data}
+\author{\textbf{Johannes Ranke} \\
+%EndAName
+Product Safety \\
+Harlan Laboratories Ltd. \\
+Zelgliweg 1, CH--4452 Itingen, Switzerland}
+\maketitle
+
+\begin{abstract}
+In the regulatory evaluation of chemical substances like plant protection
+products (pesticides), biocides and other chemicals, degradation data play an
+important role. For the evaluation of pesticide degradation experiments, 
+detailed guidance has been developed, based on nonlinear optimisation. 
+The \RR{} add-on package \Rpackage{mkin} implements fitting the models
+recommended in this guidance from within R and calculates the recommended
+statistical measures for data series within one or more compartments,
+for parent and metabolites.
+\end{abstract}
+
+
+\thispagestyle{empty} \setcounter{page}{0}
+
+\clearpage
+
+\tableofcontents
+
+\textbf{Key words}: Kinetics, FOCUS, nonlinear optimisation
+
+\section{Introduction}
+\label{intro}
+
+Many approaches are possible regarding the evaluation of chemical degradation
+data.  The \Rpackage{mkin} package \citep{pkg:mkin} in \RR{}
+\citep{rcore2010} implements the approach recommended in the kinetics report
+provided by the FOrum for Co-ordination of pesticide fate models and their
+USe \citep{FOCUS2006} for simple data series for one parent compound in one
+compartment.
+
+\section{Example}
+\label{exam}
+
+In the following, requirements for data formatting are explained. Then the
+procedure for fitting the four kinetic models recommended by the FOCUS group
+to an example dataset for parent only given in the FOCUS kinetics report is
+illustrated.  The explanations are kept rather verbose in order to lower the
+barrier for \RR{} newcomers.
+
+\subsection{Data format}
+
+The following listing shows example dataset C from the FOCUS kinetics
+report as distributed with the \Rpackage{kinfit} package
+
+\begin{Schunk}
+\begin{Sinput}
+R> library("mkin")
+R> FOCUS_2006_C
+\end{Sinput}
+\begin{Soutput}
+    t parent
+1   0   85.1
+2   1   57.9
+3   3   29.9
+4   7   14.6
+5  14    9.7
+6  28    6.6
+7  63    4.0
+8  91    3.9
+9 119    0.6
+\end{Soutput}
+\end{Schunk}
+
+Note that the data needs to be in the format of a data frame containing
+a variable \Robject{time} containing sampling times and a variable
+\Robject{parent} containing the measured data. Replicate measurements are
+not recorded in extra columns but simply appended, leading to multiple
+occurrences of the sampling times \Robject{time}.
+
+Small to medium size dataset can be conveniently entered directly as \RR{} code
+as shown in the following listing
+
+\begin{Schunk}
+\begin{Sinput}
+R> example_data <- data.frame(
++   time = c(0, 1, 3, 7, 14, 28, 63, 91, 119),
++   parent = c(85.1, 57.9, 29.9, 14.6, 9.7, 6.6, 4, 3.9, 0.6)
++ )
+\end{Sinput}
+\end{Schunk}
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
+% vim: set foldmethod=syntax:
