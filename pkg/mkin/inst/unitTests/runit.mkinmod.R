@@ -1,4 +1,4 @@
-test.mkinmod.SFO <- function(
+test.mkinmod.SFO <- function()
 {  
   SFO.diffs <- c(
     parent = "d_parent = - k_parent_sink * parent"
@@ -13,7 +13,7 @@ test.mkinmod.SFO <- function(
   checkIdentical(SFO, SFO.mkinmod)
 }
 
-test.mkinmod.SFORB <- function(
+test.mkinmod.SFORB <- function()
 {  
   SFORB.diffs <- c(
     parent_free = paste(
@@ -35,7 +35,7 @@ test.mkinmod.SFORB <- function(
   checkIdentical(SFORB, SFORB.mkinmod)
 }
 
-test.mkinmod.SFO_SFO <- function(
+test.mkinmod.SFO_SFO <- function()
 {  
   SFO_SFO.diffs <- c(
     parent = "d_parent = - k_parent_sink * parent - k_parent_m1 * parent",

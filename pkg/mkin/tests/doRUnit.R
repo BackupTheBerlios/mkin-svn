@@ -26,7 +26,7 @@ if(require("RUnit", quietly=TRUE)) {
   ## --- Testing ---
  
   ## Define tests
-  testSuite <- defineTestSuite(name=paste(pkg, "rcdk Unit Tests"),
+  testSuite <- defineTestSuite(name=paste(pkg, " Unit Tests"),
                                           dirs=path)
   ## Run
   tests <- runTestSuite(testSuite)
