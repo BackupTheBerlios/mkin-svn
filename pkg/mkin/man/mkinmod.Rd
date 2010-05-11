@@ -15,12 +15,12 @@ mkinmod(spec = list(parent = list(type = "SFO", to = NA, sink = TRUE)))
   \item{spec}{
     A list of observed variables to be modelled. Each observed variable has to be 
     represented by a list with the following entries:
-    \item{type}{ The type of kinetics to use for the variable. Currently, only
+    \code{type}{ The type of kinetics to use for the variable. Currently, only
       single first order kinetics "SFO" or single first order with reversible binding
       "SFORB" are implemented. }
-    \item{to}{ A vector of names of variables to which a transfer is to be assumed
+    \code{to}{ A vector of names of variables to which a transfer is to be assumed
       in the model. }
-    \item{sink}{ Boolean, specifying if transformation to unspecified compounds (sink) 
+    \code{sink}{ Boolean, specifying if transformation to unspecified compounds (sink) 
       is to be assumed in the model. }
   }
 }

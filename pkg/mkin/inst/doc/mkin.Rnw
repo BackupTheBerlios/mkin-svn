@@ -108,11 +108,10 @@ example_data <- data.frame(
 
 \subsection{Model definition}
 
-The next task is to define the model to be fitted to the data. In order to facilitate this task, 
-a convenience function \Robject{mkinmod} is available.
+The next task is to define the model to be fitted to the data. In order to
+facilitate this task, a convenience function \Robject{mkinmod} is available.
 
 <<model_definition, echo=TRUE>>=
-source("~/R/kinfit.kriemhild/pkg/mkin/R/mkinmod.R")
 SFO <- mkinmod(spec = list(parent = list(type = "SFO", to = NA, sink = TRUE)))
 SFORB <- mkinmod(spec = list(parent = list(type = "SFORB", to = NA, sink = TRUE)))
 SFO_SFO <- mkinmod(spec = list(
@@ -131,8 +130,9 @@ from the \Rpackage{FME} package and the produces a fit using \Robject{modFit}
 from the same package.
 
 <<model_fitting, echo=TRUE>>=
-source("~/R/kinfit.kriemhild/pkg/mkin/R/mkinfit.R")
-SFO.fit <- mkinfit(SFO, FOCUS_2006_C, fixed_initials = c(FALSE, TRUE))
+# Do not show significance stars as they interfere with vignette generation
+options(show.signif.stars = FALSE)
+SFO.fit <- mkinfit(SFO, FOCUS_2006_C)
 summary(SFO.fit)
 SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C)
 summary(SFORB.fit)
