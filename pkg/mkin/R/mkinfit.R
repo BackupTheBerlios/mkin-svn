@@ -1,8 +1,10 @@
 mkinfit <- function(mkinmod, observed, 
   parms.ini = rep(0.1, length(mkinmod$parms)),
-  fixed_parms = rep(FALSE, length(mkinmod$parms)),
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
+  fixed_parms = rep(FALSE, length(mkinmod$parms)),
   fixed_initials = c(FALSE, rep(TRUE, length(mkinmod$diffs) - 1)), 
+  plot = NULL, 
+  err = NULL, weight = "none", scaleVar = FALSE,
   ...)
 {
   # Name the parameters if they are not named yet
@@ -20,21 +22,29 @@ mkinfit <- function(mkinmod, observed,
   } 
 
   # Name the inital parameter values if they are not named yet
-  if(is.null(names(state.ini))) names(state.ini) <- paste(names(mkinmod$diffs), "0", sep="_")
+  if(is.null(names(state.ini))) names(state.ini) <- names(mkinmod$diffs)
 
   # TODO: Collect parameters to be optimised
+  parms.optim <- parms.ini[!fixed_parms]
+  parms.fixed <- parms.ini[fixed_parms]
+
+  state.ini.optim <- state.ini[!fixed_initials]
+  state.ini.optim.boxnames <- names(state.ini.optim)
+  names(state.ini.optim) <- paste(names(state.ini.optim), "0", sep="_")
+  state.ini.fixed <- state.ini[fixed_initials]
 
   # Define the model cost function
   cost <- function(P)
   {
-    inistates <- c(P[[1]], rep(0, length(mkinmod$diffs) - 1))
-    names(inistates) = names(mkinmod$diffs)
+    if(length(state.ini.optim) > 0) {
+      odeini <- c(P[1:length(state.ini.optim)], state.ini.fixed)
+      names(odeini) <- c(state.ini.optim.boxnames, names(state.ini.fixed))
+    } else odeini <- state.ini.fixed
 
-    odeparms <- P[2:length(P)]
-    names(odeparms) <- mkinmod$parms
+    odeparms <- c(P[(length(state.ini.optim) + 1):length(P)], parms.fixed)
     # Solve the ODE
     out <- ode(
-      y = inistates,
+      y = odeini,
       times = unique(observed$time),
       func = mkindiff, 
       parms = odeparms)
@@ -49,7 +59,8 @@ mkinfit <- function(mkinmod, observed,
       }
     }    
     
-    return(modCost(out_transformed, observed, y = "value"))
+    return(modCost(out_transformed, observed, y = "value",
+      err = err, weight = weight, scaleVar = scaleVar))
   }
-  modFit(cost, c(state.ini[1], parms.ini))
+  modFit(cost, c(state.ini.optim, parms.optim), ...)
 }
