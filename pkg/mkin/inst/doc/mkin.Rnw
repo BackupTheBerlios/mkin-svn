@@ -37,10 +37,10 @@ In the regulatory evaluation of chemical substances like plant protection
 products (pesticides), biocides and other chemicals, degradation data play an
 important role. For the evaluation of pesticide degradation experiments, 
 detailed guidance has been developed, based on nonlinear optimisation. 
-The \RR{} add-on package \Rpackage{mkin} implements fitting the models
-recommended in this guidance from within R and calculates the recommended
-statistical measures for data series within one or more compartments,
-for parent and metabolites.
+The \RR{} add-on package \Rpackage{mkin} implements fitting some of the models
+recommended in this guidance from within R and calculates some statistical
+measures for data series within one or more compartments, for parent and
+metabolites.
 \end{abstract}
 
 
@@ -138,9 +138,11 @@ SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C)
 summary(SFORB.fit)
 SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
 summary(SFO_SFO.fit)
-SFO_SFO.fit.2 <- mkinfit(SFO_SFO, FOCUS_2006_D, fixed_initials = c(FALSE, FALSE), fixed_parms = c(FALSE, TRUE, FALSE))
+SFO_SFO.fit.2 <- mkinfit(SFO_SFO, FOCUS_2006_D, 
+  fixed_initials = c(FALSE, FALSE), fixed_parms = c(FALSE, TRUE, FALSE))
 summary(SFO_SFO.fit.2)
-SFO_SFO.fit.3 <- mkinfit(SFO_SFO, FOCUS_2006_D, fixed_initials = c(FALSE, FALSE), fixed_parms = c(FALSE, TRUE, FALSE), lower = -0.0000001)
+SFO_SFO.fit.3 <- mkinfit(SFO_SFO, FOCUS_2006_D, 
+  fixed_initials = c(FALSE, FALSE), fixed_parms = c(FALSE, TRUE, FALSE), lower = -0.0000001)
 summary(SFO_SFO.fit.3)
 SFORB_SFO.fit <- mkinfit(SFORB_SFO, FOCUS_2006_D)
 summary(SFORB_SFO.fit)
