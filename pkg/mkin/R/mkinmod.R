@@ -55,7 +55,7 @@ mkinmod <- function(spec = list(parent = list(type = "SFO", to = NA, sink = TRUE
   # Transfer between compartments
   for (varname in names(spec)) {
     to <- spec[[varname]]$to
-    if(!is.na(to)) {
+    if(!is.na(to[[1]])) {
       origin_box <- switch(spec[[varname]]$type,
         SFO = varname,
         SFORB = paste(varname, "free", sep="_"))
