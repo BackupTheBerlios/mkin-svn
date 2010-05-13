@@ -10,7 +10,7 @@
   values.
 }
 \usage{
-mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), fixed_parms = rep(FALSE, length(mkinmod$parms)), fixed_initials = c(FALSE, rep(TRUE, length(mkinmod$diffs) - 1)), plot = NULL, err = NULL, weight = "none", scaleVar = FALSE, ...)
+mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), fixed_parms = rep(FALSE, length(mkinmod$parms)), fixed_initials = c(FALSE, rep(TRUE, length(mkinmod$diffs) - 1)), plot = FALSE, quiet = FALSE, err = NULL, weight = "none", scaleVar = FALSE, ...)
 }
 \arguments{
   \item{mkinmod}{
@@ -49,6 +49,9 @@ mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.in
   \item{plot}{
     Should the observed values and the numerical solutions be plotted at each stage
     of the optimisation?
+}
+  \item{quiet}{
+    Suppress printing out the current model cost after each improvement?
 }
   \item{err }{either \code{NULL}, or the name of the column with the
     \emph{error} estimates, used to weigh the residuals (see details of
