@@ -69,8 +69,8 @@ mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.in
 }
 }
 \value{
-    A list of class \code{\link{modFit}}. Thus, at present, a summary can be obtained
-    by \code{\link{summary.modFit}}. 
+    A list with "mkinfit" and "modFit" in the class attribute. Thus, at
+    present, a summary can be obtained by \code{\link{summary.modFit}}. 
 }
 \author{
   Johannes Ranke <jranke@{harlan.com,uni-bremen.de}>

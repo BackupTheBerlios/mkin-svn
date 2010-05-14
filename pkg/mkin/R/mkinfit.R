@@ -7,6 +7,9 @@ mkinfit <- function(mkinmod, observed,
   err = NULL, weight = "none", scaleVar = FALSE,
   ...)
 {
+  # Get names of observed variables
+  obs_vars = unique(as.character(observed$name))
+
   # Name the parameters if they are not named yet
   if(is.null(names(parms.ini))) names(parms.ini) <- mkinmod$parms
   # Create a function calculating the differentials specified by the model
@@ -35,6 +38,7 @@ mkinfit <- function(mkinmod, observed,
 
   cost.old <- 1e100
   calls <- 0
+  out_predicted <- NA
   # Define the model cost function
   cost <- function(P)
   {
@@ -59,6 +63,7 @@ mkinfit <- function(mkinmod, observed,
       func = mkindiff, 
       parms = odeparms)
      
+  
     # Output transformation for models with ghost compartments like SFORB
     out_transformed <- data.frame(time = out[,"time"])
     for (var in names(mkinmod$map)) {
@@ -68,6 +73,7 @@ mkinfit <- function(mkinmod, observed,
         out_transformed[var] <- rowSums(out[, mkinmod$map[[var]]])
       }
     }    
+    assign("out_predicted", subset(out_transformed, time %in% observed$time), inherits=TRUE)
 
     mC <- modCost(out_transformed, observed, y = "value",
       err = err, weight = weight, scaleVar = scaleVar)
@@ -81,7 +87,6 @@ mkinfit <- function(mkinmod, observed,
         plot(0, type="n", 
           xlim = range(observed$time), ylim = range(observed$value, na.rm=TRUE),
           xlab = "Time", ylab = "Observed")
-        obs_vars = unique(as.character(observed$name))
         col_obs <- pch_obs <- 1:length(obs_vars)
         names(col_obs) <- names(pch_obs) <- obs_vars
         for (obs_var in obs_vars) {
@@ -97,5 +102,28 @@ mkinfit <- function(mkinmod, observed,
     }
     return(mC)
   }
-  modFit(cost, c(state.ini.optim, parms.optim), ...)
+  fit <- modFit(cost, c(state.ini.optim, parms.optim), ...)
+
+  fit$observed <- mkin_long_to_wide(observed)
+  fit$predicted <- out_predicted
+
+  # Calculate chi2 error levels
+  means <- aggregate(value ~ time + name, data = observed, mean, na.rm=TRUE)
+  predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
+  errdata <- merge(means, predicted_long, by = c("time", "name"), suffixes = c("_mean", "_pred"))
+  errdata <- errdata[order(errdata$time, errdata$name), ]
+  fit$errmin.overall <- mkinerrmin(errdata, length(parms.ini))
+  fit$errmin <- vector()
+  for (obs_var in obs_vars)
+  {
+    errdata.var <- subset(errdata, name == obs_var)
+    n.parms.optim <- length(grep(paste("k", obs_var, sep="_"), names(parms.optim)))
+    n.initials.optim <- length(grep(paste(obs_var, 0, sep="_"), names(state.ini.optim)))
+    n.optim <- n.parms.optim + n.initials.optim
+    fit$errmin[obs_var] <- mkinerrmin(errdata.var, n.optim)
+  }
+
+  # Calculate chi2
+  class(fit) <- c("mkinfit", "modFit") 
+  return(fit)
 }
