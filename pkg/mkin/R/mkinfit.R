@@ -1,8 +1,8 @@
 mkinfit <- function(mkinmod, observed, 
   parms.ini = rep(0.1, length(mkinmod$parms)),
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
-  fixed_parms = rep(FALSE, length(mkinmod$parms)),
-  fixed_initials = c(FALSE, rep(TRUE, length(mkinmod$diffs) - 1)), 
+  fixed_parms = NULL,
+  fixed_initials = names(mkinmod$diffs)[-1],
   plot = FALSE, quiet = FALSE,
   err = NULL, weight = "none", scaleVar = FALSE,
   ...)
@@ -27,14 +27,18 @@ mkinfit <- function(mkinmod, observed,
   # Name the inital parameter values if they are not named yet
   if(is.null(names(state.ini))) names(state.ini) <- names(mkinmod$diffs)
 
-  # TODO: Collect parameters to be optimised
-  parms.optim <- parms.ini[!fixed_parms]
+  # Parameters to be optimised
   parms.fixed <- parms.ini[fixed_parms]
+  optim_parms <- setdiff(names(parms.ini), fixed_parms)
+  parms.optim <- parms.ini[optim_parms]
 
-  state.ini.optim <- state.ini[!fixed_initials]
-  state.ini.optim.boxnames <- names(state.ini.optim)
-  names(state.ini.optim) <- paste(names(state.ini.optim), "0", sep="_")
   state.ini.fixed <- state.ini[fixed_initials]
+  optim_initials <- setdiff(names(state.ini), fixed_initials)
+  state.ini.optim <- state.ini[optim_initials]
+  state.ini.optim.boxnames <- names(state.ini.optim)
+  if(length(state.ini.optim) > 0) {
+      names(state.ini.optim) <- paste(names(state.ini.optim), "0", sep="_")
+  }
 
   cost.old <- 1e100
   calls <- 0

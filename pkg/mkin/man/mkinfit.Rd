@@ -10,7 +10,7 @@
   values.
 }
 \usage{
-mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), fixed_parms = rep(FALSE, length(mkinmod$parms)), fixed_initials = c(FALSE, rep(TRUE, length(mkinmod$diffs) - 1)), plot = FALSE, quiet = FALSE, err = NULL, weight = "none", scaleVar = FALSE, ...)
+mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), fixed_parms = NULL, fixed_initials = names(mkinmod$diffs)[-1], plot = FALSE, quiet = FALSE, err = NULL, weight = "none", scaleVar = FALSE, ...)
 }
 \arguments{
   \item{mkinmod}{
@@ -38,13 +38,12 @@ mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.in
     variable to 100 and all others to 0.
 }
   \item{fixed_parms}{
-    A vector of booleans specifying which parameters are not to be optimised. The default
-    is to include all model parameters in the optimisation.
+    The names of parameters that should not be optimised but rather kept at the values
+    specified in \code{parms.ini}.
 }
   \item{fixed_initials}{
-    A vector of booleans specifying which initial values to include in the optimisation.
-    The default is to optimise the initial value of the first model variable and to
-    keep all other initial values fixed.
+    The names of model variables for which the initial state at time 0 should be excluded
+    from the optimisation. Defaults to all state variables except for the first one.
 }
   \item{plot}{
     Should the observed values and the numerical solutions be plotted at each stage
