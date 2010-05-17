@@ -25,7 +25,12 @@ mkinerrmin(errdata, n.parms, alpha = 0.05)
 }
 }
 \value{
-The relative error, expressed as a fraction.
+  A list with the following components:
+  \item{err.min}{The relative error, expressed as a fraction.}
+  \item{n.optim}{The number of optimised parameters attributed to the data series.}
+  \item{df}{The number of remaining degrees of freedom for the chi2 error level calculations.
+    Note that mean values are used for the chi2 statistic and therefore every time point with 
+    observed values in the series only counts one time.}
 }
 \details{
     This function is used internally by \code{\link{mkinfit}}.

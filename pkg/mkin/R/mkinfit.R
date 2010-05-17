@@ -1,4 +1,4 @@
-mkinfit <- function(mkinmod, observed, 
+mkinfit <- function(mkinmod, observed,
   parms.ini = rep(0.1, length(mkinmod$parms)),
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
   fixed_parms = NULL,
@@ -7,6 +7,8 @@ mkinfit <- function(mkinmod, observed,
   err = NULL, weight = "none", scaleVar = FALSE,
   ...)
 {
+  mod_vars <- names(mkinmod$diffs)
+#  observed <- subset(observed, name %in% mod_vars)
   # Get names of observed variables
   obs_vars = unique(as.character(observed$name))
 
@@ -15,7 +17,7 @@ mkinfit <- function(mkinmod, observed,
   # Create a function calculating the differentials specified by the model
   mkindiff <- function(t, state, parms) {
     diffs <- vector()
-    for (box in names(mkinmod$diffs))
+    for (box in mod_vars)
     {
       diffname <- paste("d", box, sep="_")      
       diffs[diffname] <- with(as.list(c(state, parms)),
@@ -25,7 +27,7 @@ mkinfit <- function(mkinmod, observed,
   } 
 
   # Name the inital parameter values if they are not named yet
-  if(is.null(names(state.ini))) names(state.ini) <- names(mkinmod$diffs)
+  if(is.null(names(state.ini))) names(state.ini) <- mod_vars
 
   # Parameters to be optimised
   parms.fixed <- parms.ini[fixed_parms]
@@ -108,26 +110,80 @@ mkinfit <- function(mkinmod, observed,
   }
   fit <- modFit(cost, c(state.ini.optim, parms.optim), ...)
 
+  fit$diffs <- mkinmod$diffs
+  fit$observed_long <- observed
   fit$observed <- mkin_long_to_wide(observed)
+  predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
   fit$predicted <- out_predicted
 
-  # Calculate chi2 error levels
+  # Calculate chi2 error levels according to FOCUS (2006)
   means <- aggregate(value ~ time + name, data = observed, mean, na.rm=TRUE)
-  predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
   errdata <- merge(means, predicted_long, by = c("time", "name"), suffixes = c("_mean", "_pred"))
   errdata <- errdata[order(errdata$time, errdata$name), ]
-  fit$errmin.overall <- mkinerrmin(errdata, length(parms.ini))
-  fit$errmin <- vector()
+  errmin.overall <- mkinerrmin(errdata, length(parms.optim) + length(state.ini.optim))
+  
+  errmin <- data.frame(err.min = errmin.overall$err.min, 
+    n.optim = errmin.overall$n.optim, df = errmin.overall$df)
+  rownames(errmin) <- "All data"
   for (obs_var in obs_vars)
   {
     errdata.var <- subset(errdata, name == obs_var)
     n.parms.optim <- length(grep(paste("k", obs_var, sep="_"), names(parms.optim)))
     n.initials.optim <- length(grep(paste(obs_var, 0, sep="_"), names(state.ini.optim)))
     n.optim <- n.parms.optim + n.initials.optim
-    fit$errmin[obs_var] <- mkinerrmin(errdata.var, n.optim)
+    errmin.tmp <- mkinerrmin(errdata.var, n.optim)
+    errmin[obs_var, c("err.min", "n.optim", "df")] <- errmin.tmp
   }
+  fit$errmin <- errmin
 
-  # Calculate chi2
+  # Collect observed, predicted and residuals
+  data <- merge(observed, predicted_long, by = c("time", "name"))
+  names(data) <- c("time", "variable", "observed", "predicted")
+  data$residual <- data$observed - data$predicted
+  data$variable <- ordered(data$variable, levels = mod_vars)
+  fit$data <- data[order(data$variable, data$time), ]
+
   class(fit) <- c("mkinfit", "modFit") 
   return(fit)
+}
+
+summary.mkinfit <- function(object, data = TRUE, cov = FALSE,...) {
+  ans <- FME:::summary.modFit(object, cov = cov)
+  ans$diffs <- object$diffs
+  if(data) ans$data <- object$data
+  ans$errmin <- object$errmin 
+  class(ans) <- c("summary.mkinfit", "summary.modFit") 
+  return(ans)  
+}
+
+# Expanded from print.summary.modFit
+print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+  cat("\nEquations:\n")
+  print(as.character(x[["diffs"]])) 
+  df  <- x$df
+  rdf <- df[2]
+  cat("\nParameters:\n")
+  printCoefmat(x$par, digits = digits, ...)
+  cat("\nResidual standard error:",
+      format(signif(x$sigma, digits)), "on", rdf, "degrees of freedom\n")
+
+  cat("\nChi2 error levels in percent:\n")
+  x$errmin$err.min <- 100 * x$errmin$err.min
+  print(x$errmin, digits=digits,...)
+
+  printcor <- !is.null(x$cov.unscaled)
+  if (printcor){
+    Corr <- cov2cor(x$cov.unscaled)
+    rownames(Corr) <- colnames(Corr) <- rownames(x$par)
+    cat("\nParameter correlation:\n")
+    print(Corr, digits = digits, ...)
+  }
+
+  printdata <- !is.null(x$data)
+  if (printdata){
+    cat("\nData:\n")
+    print(format(x$data, digits = digits, scientific = FALSE,...), row.names = FALSE)
+  }
+
+  invisible(x)
 }

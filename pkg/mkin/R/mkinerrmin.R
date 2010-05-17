@@ -10,5 +10,5 @@ mkinerrmin <- function(errdata, n.parms, alpha = 0.05)
 		 qchisq(1 - alpha,df))^2
 	}
 	err.min <- optimize(f, c(0.01,0.9))$minimum
-	return(err.min)
+	return(list(err.min = err.min, n.optim = n.parms, df = df))
 }
