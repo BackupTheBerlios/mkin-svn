@@ -7,10 +7,22 @@ test.mkinmod.SFO <- function()
   SFO.map <- list(parent = "parent")
   SFO <- list(diffs = SFO.diffs, parms = SFO.parms, map = SFO.map)
   class(SFO) <- "mkinmod"
-  SFO.mkinmod <- mkinmod(spec = list(
-    parent = list(type = "SFO", to = NA, sink=TRUE))
+  SFO.1 <- mkinmod(
+    parent = list(type = "SFO", to = NULL, sink = TRUE)
   )
-  checkIdentical(SFO, SFO.mkinmod)
+  checkIdentical(SFO, SFO.1)
+  SFO.2 <- mkinmod(
+    parent = list(type = "SFO", to = NULL)
+  )
+  checkIdentical(SFO, SFO.2)
+  SFO.3 <- mkinmod(
+    parent = list(type = "SFO", sink = TRUE)
+  )
+  checkIdentical(SFO, SFO.3)
+  SFO.4 <- mkinmod(
+    parent = list(type = "SFO")
+  )
+  checkIdentical(SFO, SFO.3)
 }
 
 test.mkinmod.SFORB <- function()
@@ -29,8 +41,8 @@ test.mkinmod.SFORB <- function()
   SFORB.map <- list(parent = c("parent_free", "parent_bound"))
   SFORB <- list(diffs = SFORB.diffs, parms = SFORB.parms, map = SFORB.map)
   class(SFORB) <- "mkinmod"
-  SFORB.mkinmod <- mkinmod(spec = list(
-    parent = list(type = "SFORB", to = NA, sink=TRUE))
+  SFORB.mkinmod <- mkinmod(
+    parent = list(type = "SFORB", to = NULL, sink=TRUE)
   )
   checkIdentical(SFORB, SFORB.mkinmod)
 }
@@ -45,9 +57,9 @@ test.mkinmod.SFO_SFO <- function()
   SFO_SFO.map <- list(parent = "parent", m1 = "m1")
   SFO_SFO <- list(diffs = SFO_SFO.diffs, parms = SFO_SFO.parms, map = SFO_SFO.map)
   class(SFO_SFO) <- "mkinmod"
-  SFO_SFO.mkinmod <- mkinmod(spec = list(
+  SFO_SFO.mkinmod <- mkinmod(
     parent = list(type = "SFO", to = "m1", sink=TRUE),
-    m1 = list(type = "SFO", to = NA, sink=TRUE))
+    m1 = list(type = "SFO", sink=TRUE)
   )
   checkIdentical(SFO_SFO, SFO_SFO.mkinmod)
 }

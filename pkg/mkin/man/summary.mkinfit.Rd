@@ -55,6 +55,6 @@ Passed to \code{\link{summary.modFit}}.  }
   Johannes Ranke <jranke@harlan.com>
 }
 \examples{
-  summary(mkinfit(mkinmod(), FOCUS_2006_A))
+  summary(mkinfit(mkinmod(parent = list(type = "SFO")), FOCUS_2006_A))
 }
 \keyword{ utilities }

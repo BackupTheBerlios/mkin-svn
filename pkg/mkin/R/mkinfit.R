@@ -8,7 +8,6 @@ mkinfit <- function(mkinmod, observed,
   ...)
 {
   mod_vars <- names(mkinmod$diffs)
-#  observed <- subset(observed, name %in% mod_vars)
   # Get names of observed variables
   obs_vars = unique(as.character(observed$name))
 
@@ -16,11 +15,12 @@ mkinfit <- function(mkinmod, observed,
   if(is.null(names(parms.ini))) names(parms.ini) <- mkinmod$parms
   # Create a function calculating the differentials specified by the model
   mkindiff <- function(t, state, parms) {
+    time <- t
     diffs <- vector()
     for (box in mod_vars)
     {
       diffname <- paste("d", box, sep="_")      
-      diffs[diffname] <- with(as.list(c(state, parms)),
+      diffs[diffname] <- with(as.list(c(time,state, parms)),
         eval(parse(text=mkinmod$diffs[[box]])))
     }
     return(list(c(diffs)))
@@ -70,7 +70,7 @@ mkinfit <- function(mkinmod, observed,
       parms = odeparms)
      
   
-    # Output transformation for models with ghost compartments like SFORB
+    # Output transformation for models with unobserved compartments like SFORB
     out_transformed <- data.frame(time = out[,"time"])
     for (var in names(mkinmod$map)) {
       if(length(mkinmod$map[[var]]) == 1) {
@@ -111,7 +111,6 @@ mkinfit <- function(mkinmod, observed,
   fit <- modFit(cost, c(state.ini.optim, parms.optim), ...)
 
   fit$diffs <- mkinmod$diffs
-  fit$observed_long <- observed
   fit$observed <- mkin_long_to_wide(observed)
   predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
   fit$predicted <- out_predicted
@@ -128,9 +127,11 @@ mkinfit <- function(mkinmod, observed,
   for (obs_var in obs_vars)
   {
     errdata.var <- subset(errdata, name == obs_var)
-    n.parms.optim <- length(grep(paste("k", obs_var, sep="_"), names(parms.optim)))
-    n.initials.optim <- length(grep(paste(obs_var, 0, sep="_"), names(state.ini.optim)))
-    n.optim <- n.parms.optim + n.initials.optim
+    n.k.optim <- length(grep(paste("k", obs_var, sep="_"), names(parms.optim)))
+    n.initials.optim <- length(grep(paste(obs_var, ".*", "_0", sep=""), names(state.ini.optim)))
+    n.optim <- n.k.optim + n.initials.optim
+    if ("alpha" %in% names(parms.optim)) n.optim <- n.optim * 1
+    if ("beta" %in% names(parms.optim)) n.optim <- n.optim * 1
     errmin.tmp <- mkinerrmin(errdata.var, n.optim)
     errmin[obs_var, c("err.min", "n.optim", "df")] <- errmin.tmp
   }
@@ -140,7 +141,7 @@ mkinfit <- function(mkinmod, observed,
   data <- merge(observed, predicted_long, by = c("time", "name"))
   names(data) <- c("time", "variable", "observed", "predicted")
   data$residual <- data$observed - data$predicted
-  data$variable <- ordered(data$variable, levels = mod_vars)
+  data$variable <- ordered(data$variable, levels = obs_vars)
   fit$data <- data[order(data$variable, data$time), ]
 
   class(fit) <- c("mkinfit", "modFit") 

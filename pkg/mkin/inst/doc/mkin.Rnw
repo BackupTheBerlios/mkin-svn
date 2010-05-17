@@ -112,14 +112,14 @@ The next task is to define the model to be fitted to the data. In order to
 facilitate this task, a convenience function \Robject{mkinmod} is available.
 
 <<model_definition, echo=TRUE>>=
-SFO <- mkinmod(spec = list(parent = list(type = "SFO", to = NA, sink = TRUE)))
-SFORB <- mkinmod(spec = list(parent = list(type = "SFORB", to = NA, sink = TRUE)))
-SFO_SFO <- mkinmod(spec = list(
+SFO <- mkinmod(parent = list(type = "SFO"))
+SFORB <- mkinmod(parent = list(type = "SFORB"))
+SFO_SFO <- mkinmod(
   parent = list(type = "SFO", to = "m1", sink = TRUE),
-  m1 = list(type = "SFO", to = NA, sink = TRUE)))
-SFORB_SFO <- mkinmod(spec = list(
+  m1 = list(type = "SFO"))
+SFORB_SFO <- mkinmod(
   parent = list(type = "SFORB", to = "m1", sink = TRUE),
-  m1 = list(type = "SFO", to = NA, sink = TRUE)))
+  m1 = list(type = "SFO"))
 @
 
 \subsection{Fitting the model}

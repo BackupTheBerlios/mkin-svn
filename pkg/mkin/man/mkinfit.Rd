@@ -76,9 +76,9 @@ mkinfit(mkinmod, observed, parms.ini = rep(0.1, length(mkinmod$parms)), state.in
 }
 \examples{
 # One parent compound, one metabolite, both single first order.
-SFO_SFO <- mkinmod(spec = list(
+SFO_SFO <- mkinmod(
   parent = list(type = "SFO", to = "m1", sink = TRUE),
-  m1 = list(type = "SFO", to = NA, sink = TRUE)))
+  m1 = list(type = "SFO"))
 # Fit the model to the FOCUS example dataset D using defaults
 fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
 summary(fit)
