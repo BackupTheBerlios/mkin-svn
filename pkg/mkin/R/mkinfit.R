@@ -117,6 +117,14 @@ mkinfit <- function(mkinmod, observed,
   predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
   fit$predicted <- out_predicted
 
+  # Collect initial parameter values in two dataframes
+  fit$start <- data.frame(initial = c(state.ini.optim, parms.optim))
+  if (exists("lower")) fit$start$lower <- lower
+  if (exists("upper")) fit$start$upper <- upper
+
+  fit$fixed <- data.frame(
+    value = c(state.ini.fixed, parms.fixed))
+
   # Calculate chi2 error levels according to FOCUS (2006)
   means <- aggregate(value ~ time + name, data = observed, mean, na.rm=TRUE)
   errdata <- merge(means, predicted_long, by = c("time", "name"), suffixes = c("_mean", "_pred"))
@@ -132,12 +140,56 @@ mkinfit <- function(mkinmod, observed,
     n.k.optim <- length(grep(paste("k", obs_var, sep="_"), names(parms.optim)))
     n.initials.optim <- length(grep(paste(obs_var, ".*", "_0", sep=""), names(state.ini.optim)))
     n.optim <- n.k.optim + n.initials.optim
-    if ("alpha" %in% names(parms.optim)) n.optim <- n.optim * 1
-    if ("beta" %in% names(parms.optim)) n.optim <- n.optim * 1
+    if ("alpha" %in% names(parms.optim)) n.optim <- n.optim + 1
+    if ("beta" %in% names(parms.optim)) n.optim <- n.optim + 1
     errmin.tmp <- mkinerrmin(errdata.var, n.optim)
     errmin[obs_var, c("err.min", "n.optim", "df")] <- errmin.tmp
   }
   fit$errmin <- errmin
+
+  # Calculate dissipation times DT50 and DT90
+  parms.all = c(fit$par, parms.fixed)
+  fit$distimes <- data.frame(DT50 = rep(NA, length(obs_vars)), DT90 = DT50, row.names = obs_vars)
+  for (obs_var in obs_vars) {
+      type = names(mkinmod$map[[obs_var]])[1]  
+      if (type == "SFO") {
+        k_names = grep(paste("k", obs_var, sep="_"), names(parms.all), value=TRUE)
+        k_tot = sum(parms.all[k_names])
+        DT50 = log(2)/k_tot
+        DT90 = log(10)/k_tot
+      }
+      if (type == "FOMC") {
+        alpha = parms.all["alpha"]
+        beta = parms.all["beta"]
+        DT50 = beta * (2^(1/alpha) - 1)
+        DT90 = beta * (10^(1/alpha) - 1)
+      }
+      if (type == "SFORB") {
+        # FOCUS kinetics (2006), p. 60 f
+        k_out_names = grep(paste("k", obs_var, "free", sep="_"), names(parms.all), value=TRUE)
+        k_out_names = setdiff(k_out_names, paste("k", obs_var, "free", "bound", sep="_"))
+        k_1output = sum(parms.all[[k_out_names]])
+        k_12 = parms.all[[paste("k", obs_var, "free", "bound", sep="_")]]
+        k_21 = parms.all[[paste("k", obs_var, "bound", "free", sep="_")]]
+
+        sqrt_exp = sqrt(1/4 * (k_12 + k_21 + k_1output)^2 + k_12 * k_21 - (k_12 + k_1output) * k_21)
+        b1 = 0.5 * (k_12 + k_21 + k_1output) + sqrt_exp
+        b2 = 0.5 * (k_12 + k_21 + k_1output) - sqrt_exp
+
+        SFORB_fraction = function(t) {
+          ((k_12 + k_21 - b1)/(b2 - b1)) * exp(-b1 * t) +
+          ((k_12 + k_21 - b2)/(b1 - b2)) * exp(-b2 * t)
+        }
+        f_50 <- function(t) (SFORB_fraction(t) - 0.5)^2
+        max_DT <- 1000
+        DT50.o <- optimize(f_50, c(0.01, max_DT))$minimum
+        if (abs(DT50.o - max_DT) < 0.01) DT50 = NA
+        f_90 <- function(t) (SFORB_fraction(t) - 0.1)^2
+        DT90.o <- optimize(f_90, c(0.01, 1000))$minimum
+        if (abs(DT90.o - max_DT) < 0.01) DT90 = NA
+      }
+      fit$distimes[obs_var, ] = c(DT50, DT90)
+  }
 
   # Collect observed, predicted and residuals
   data <- merge(observed, predicted_long, by = c("time", "name"))
@@ -150,11 +202,14 @@ mkinfit <- function(mkinmod, observed,
   return(fit)
 }
 
-summary.mkinfit <- function(object, data = TRUE, cov = FALSE,...) {
+summary.mkinfit <- function(object, data = TRUE, distimes = FALSE, cov = FALSE,...) {
   ans <- FME:::summary.modFit(object, cov = cov)
   ans$diffs <- object$diffs
   if(data) ans$data <- object$data
+  ans$start <- object$start
+  ans$fixed <- object$fixed
   ans$errmin <- object$errmin 
+  ans$distimes <- object$distimes
   class(ans) <- c("summary.mkinfit", "summary.modFit") 
   return(ans)  
 }
@@ -162,17 +217,32 @@ summary.mkinfit <- function(object, data = TRUE, cov = FALSE,...) {
 # Expanded from print.summary.modFit
 print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), ...) {
   cat("\nEquations:\n")
-  print(as.character(x[["diffs"]])) 
+  print(noquote(as.character(x[["diffs"]])))
   df  <- x$df
   rdf <- df[2]
-  cat("\nParameters:\n")
+
+  cat("\nStarting values for optimised parameters:\n")
+  print(x$start)
+
+  cat("\nFixed parameter values:\n")
+  if(length(x$fixed$value) == 0) cat("None\n")
+  else print(x$fixed)
+  
+  cat("\nOptimised parameters:\n")
   printCoefmat(x$par, digits = digits, ...)
+
   cat("\nResidual standard error:",
       format(signif(x$sigma, digits)), "on", rdf, "degrees of freedom\n")
 
   cat("\nChi2 error levels in percent:\n")
   x$errmin$err.min <- 100 * x$errmin$err.min
   print(x$errmin, digits=digits,...)
+
+  printdistimes <- !is.null(x$distimes)
+  if(printdistimes){
+    cat("\nEstimated disappearance times\n")
+    print(x$distimes, digits=digits,...)
+  }    
 
   printcor <- !is.null(x$cov.unscaled)
   if (printcor){

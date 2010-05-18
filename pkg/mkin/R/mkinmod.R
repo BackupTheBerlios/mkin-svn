@@ -24,6 +24,7 @@ mkinmod <- function(...)
       SFORB = paste(varname, c("free", "bound"), sep="_")
     )
     map[[varname]] <- new_boxes
+    names(map[[varname]]) <- rep(spec[[varname]]$type, length(new_boxes))
 
     # Start a new differential equation for each new box
     new_diffs <- paste("d_", new_boxes, " =", sep="")

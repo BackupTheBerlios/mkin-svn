@@ -81,6 +81,7 @@ SFO_SFO <- mkinmod(
   m1 = list(type = "SFO"))
 # Fit the model to the FOCUS example dataset D using defaults
 fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
+str(fit)
 summary(fit)
 }
 \keyword{ models }

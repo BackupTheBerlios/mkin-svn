@@ -40,8 +40,10 @@ Passed to \code{\link{summary.modFit}}.  }
   \code{\link{summary.modFit}}, and the additional components
   \item{diffs }{The differential equations used in the model}
   \item{data }{The data (see Description above).}
+  \item{start }{The starting values and bounds, if applicable, for optimised parameters.}
+  \item{fixed }{The values of fixed parameters.}
   \item{errmin }{The chi2 error levels for each observed variable.}
-
+  \item{disstimes }{The DT50 and DT90 values for each observed variable.}
   The print method is called for its side effect, i.e. printing the summary.
 }
 \references{
