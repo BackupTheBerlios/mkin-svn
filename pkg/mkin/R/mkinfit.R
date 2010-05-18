@@ -8,6 +8,8 @@ mkinfit <- function(mkinmod, observed,
   ...)
 {
   mod_vars <- names(mkinmod$diffs)
+  # Subset dataframe with mapped (modelled) variables
+  observed <- subset(observed, name %in% names(mkinmod$map))
   # Get names of observed variables
   obs_vars = unique(as.character(observed$name))
 
