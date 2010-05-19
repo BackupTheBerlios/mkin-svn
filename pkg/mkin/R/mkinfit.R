@@ -112,6 +112,11 @@ mkinfit <- function(mkinmod, observed,
   }
   fit <- modFit(cost, c(state.ini.optim, parms.optim), ...)
 
+  # We need the function for plotting
+  fit$mkindiff <- mkindiff
+
+  # We also need various other information for summary and plotting
+  fit$map <- mkinmod$map
   fit$diffs <- mkinmod$diffs
   fit$observed <- mkin_long_to_wide(observed)
   predicted_long <- mkin_wide_to_long(out_predicted, time = "time")
@@ -119,11 +124,13 @@ mkinfit <- function(mkinmod, observed,
 
   # Collect initial parameter values in two dataframes
   fit$start <- data.frame(initial = c(state.ini.optim, parms.optim))
+  fit$start$type = c(rep("state", length(state.ini.optim)), rep("deparm", length(parms.optim)))
   if (exists("lower")) fit$start$lower <- lower
   if (exists("upper")) fit$start$upper <- upper
 
   fit$fixed <- data.frame(
     value = c(state.ini.fixed, parms.fixed))
+  fit$fixed$type = c(rep("state", length(state.ini.fixed)), rep("deparm", length(parms.fixed)))
 
   # Calculate chi2 error levels according to FOCUS (2006)
   means <- aggregate(value ~ time + name, data = observed, mean, na.rm=TRUE)
@@ -149,7 +156,8 @@ mkinfit <- function(mkinmod, observed,
 
   # Calculate dissipation times DT50 and DT90
   parms.all = c(fit$par, parms.fixed)
-  fit$distimes <- data.frame(DT50 = rep(NA, length(obs_vars)), DT90 = DT50, row.names = obs_vars)
+  fit$distimes <- data.frame(DT50 = rep(NA, length(obs_vars)), DT90 = rep(NA, length(obs_vars)), 
+    row.names = obs_vars)
   for (obs_var in obs_vars) {
       type = names(mkinmod$map[[obs_var]])[1]  
       if (type == "SFO") {
@@ -183,10 +191,10 @@ mkinfit <- function(mkinmod, observed,
         f_50 <- function(t) (SFORB_fraction(t) - 0.5)^2
         max_DT <- 1000
         DT50.o <- optimize(f_50, c(0.01, max_DT))$minimum
-        if (abs(DT50.o - max_DT) < 0.01) DT50 = NA
+        if (abs(DT50.o - max_DT) < 0.01) DT50 = NA else DT50 = DT50.o
         f_90 <- function(t) (SFORB_fraction(t) - 0.1)^2
         DT90.o <- optimize(f_90, c(0.01, 1000))$minimum
-        if (abs(DT90.o - max_DT) < 0.01) DT90 = NA
+        if (abs(DT90.o - max_DT) < 0.01) DT90 = NA else DT90 = DT90.o
       }
       fit$distimes[obs_var, ] = c(DT50, DT90)
   }
@@ -202,14 +210,14 @@ mkinfit <- function(mkinmod, observed,
   return(fit)
 }
 
-summary.mkinfit <- function(object, data = TRUE, distimes = FALSE, cov = FALSE,...) {
+summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, cov = FALSE,...) {
   ans <- FME:::summary.modFit(object, cov = cov)
   ans$diffs <- object$diffs
   if(data) ans$data <- object$data
   ans$start <- object$start
   ans$fixed <- object$fixed
   ans$errmin <- object$errmin 
-  ans$distimes <- object$distimes
+  if(distimes) ans$distimes <- object$distimes
   class(ans) <- c("summary.mkinfit", "summary.modFit") 
   return(ans)  
 }

@@ -28,6 +28,7 @@ summary(fit <- mkinfit(SFO, FOCUS_2006_C))
 summary(fit <- mkinfit(FOMC, FOCUS_2006_C))
 summary(fit <- mkinfit(SFORB, FOCUS_2006_C))
 summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_D))
+summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_D, fixed_parms = "k_parent_sink"))
 summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_E))
 summary(fit <- mkinfit(FOMC_SFO, FOCUS_2006_D))
 summary(fit <- mkinfit(SFORB_SFO, FOCUS_2006_D))
@@ -41,11 +42,11 @@ plot(residual ~ time, data = fit$data, subset = variable == "water")
 plot(residual ~ time, data = fit$data, subset = variable == "sediment")
 
 
-mkinmod <- SFO
-observed <- FOCUS_2006_A
-parms.ini <- rep(0.1)
-state.ini <- c(100)
-fixed_parms <- NULL
+mkinmod <- SFO_SFO
+observed <- FOCUS_2006_D
+parms.ini <- rep(0.1, 3)
+state.ini <- c(100, 0)
+fixed_parms <- "k_parent_sink"
 fixed_initials <- character(0)
 plot = FALSE
 quiet = FALSE

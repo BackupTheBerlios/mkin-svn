@@ -11,7 +11,7 @@
   and residual values.
 }
 \usage{
-\method{summary}{mkinfit}(object, data = TRUE, cov = FALSE, ...)
+\method{summary}{mkinfit}(object, data = TRUE, distimes = TRUE, cov = FALSE, ...)
 \method{print}{summary.mkinfit}(x, digits = max(3, getOption("digits") - 3), ...)
 }
 
@@ -24,6 +24,9 @@
 }
   \item{data}{
   logical, indicating whether the data should be included in the summary. 
+}
+  \item{distimes}{
+  logical, indicating whether DT50 and DT90 values shoule be included.
 }
   \item{cov}{
   logical, indicating whether parameter covariances should be calculated.
