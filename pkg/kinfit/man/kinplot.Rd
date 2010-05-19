@@ -20,6 +20,8 @@ kinplot(kinobject, xlab = "Time [days]", ylab = "Parent [\% of applied radioacti
 	the list of fitted kinetic models (\code{fits}), as returned by
         \code{\link{kinfit}}, and the list of results (\code{results}) 
         as returned by \code{\link{kinresults}}.
+        In contrast to the function \code{\link{kinreport}}, the data used
+        for the fitting also has to be in the kinobject list.
 	Optionally also
 	the label position of the test compound (\code{label}) and
 	the source of the data (\code{source}). }
