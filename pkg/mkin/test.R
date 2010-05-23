@@ -42,21 +42,24 @@ plot(residual ~ time, data = fit$data, subset = variable == "water")
 plot(residual ~ time, data = fit$data, subset = variable == "sediment")
 
 
-mkinmod <- SFO_SFO
+mkinmod <- SFORB_SFO
 observed <- FOCUS_2006_D
-parms.ini <- rep(0.1, 3)
-state.ini <- c(100, 0)
-fixed_parms <- "k_parent_sink"
+parms.ini <- rep(0.1, 5)
+state.ini <- c(100, 0, 0)
+fixed_parms <- NULL
 fixed_initials <- character(0)
+lower = NULL
+upper = Inf
 plot = FALSE
 quiet = FALSE
 err = NULL
 weight = "none"
 scaleVar = FALSE
 
+summary(fit <- mkinfit(SFORB_SFO, FOCUS_2006_D))
 P <- c(state.ini.optim, parms.optim)
 modCost(cost, P)
-fit <- modFit(cost, c(state.ini.optim, parms.optim))
+fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = 0)
 
 d <- FOCUS_2006_C
 d2 <- FOCUS_2006_C
@@ -99,3 +102,21 @@ schaefer07_complex_model <- mkinmod(
 
 system.time(fit <- mkinfit(schaefer07_complex_model, data, plot=TRUE))
 summary(fit, data=FALSE)
+
+
+mkinmod <- SFORB_SFO
+observed <- FOCUS_2006_D
+parms.ini = rep(0.1, length(mkinmod$parms))
+state.ini = c(100, rep(0, length(mkinmod$diffs) - 1))
+fixed_parms <- NULL
+fixed_initials = names(mkinmod$diffs)[-1]
+lower = 0
+upper = Inf
+plot = FALSE
+quiet = FALSE
+err = NULL
+weight = "none"
+scaleVar = FALSE
+
+P <- c(state.ini.optim, parms.optim)
+fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = 0)
