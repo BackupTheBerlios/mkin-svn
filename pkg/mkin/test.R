@@ -91,6 +91,19 @@ schaefer07_complex_case <- data.frame(
   C1 = c(NA, 0.55, 3.20, 5.46, 12.55, 10.45, 4.74, 4.33),
   A2 = c(NA, 0.55, 1.41, 0.55, 1.29, 1.95, 3.54, 3.86))
 
+parameters = c("degradation rate", "DT50", "formation fraction")
+schaefer07_complex_results <- data.frame(
+  compound = c(rep("parent", 2), rep(paste("metabolite", c("A1", "B1", "C1", "A2")), each = 3)),
+  parameter = parameters[c(1,2, rep(c(3,1,2), 4))],
+  KinGUI = c(0.0496, 13.99, 0.3803, 0.0139, 49.96, 0.1866, 0.0175, 39.61,
+     0.4331, 0.0638, 10.87, 0.4529, 0.0245, 28.24),
+  ModelMaker = c(0.0506, 13.69, 0.3696, 0.0136, 50.89, 0.1818, 0.0172, 40.24,
+     0.4486, 0.0700, 9.90, 0.4559, 0.0244, 28.45))
+schaefer07_complex_results <- transform(schaefer07_complex_results, 
+  deviation = abs(round(100 * ((KinGUI - ModelMaker)/ModelMaker), 1)))
+save(schaefer07_complex_results, schaefer07_complex_case, 
+  file = "schaefer07_complex_case.RData")
+
 data <- mkin_wide_to_long(schaefer07_complex_case, time = "time")
 
 schaefer07_complex_model <- mkinmod(
@@ -99,6 +112,7 @@ schaefer07_complex_model <- mkinmod(
   B1 = list(type = "SFO"),
   C1 = list(type = "SFO"),
   A2 = list(type = "SFO"))
+
 
 system.time(fit <- mkinfit(schaefer07_complex_model, data, plot=TRUE))
 summary(fit, data=FALSE)
