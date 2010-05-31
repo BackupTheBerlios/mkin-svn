@@ -42,10 +42,10 @@ plot(residual ~ time, data = fit$data, subset = variable == "water")
 plot(residual ~ time, data = fit$data, subset = variable == "sediment")
 
 
-mkinmod <- SFORB_SFO
-observed <- FOCUS_2006_D
-parms.ini <- rep(0.1, 5)
-state.ini <- c(100, 0, 0)
+mkinmod <- SFO
+observed <- FOCUS_2006_A
+parms.ini <- rep(0.1, 1)
+state.ini <- c(100)
 fixed_parms <- NULL
 fixed_initials <- character(0)
 lower = NULL
@@ -60,6 +60,7 @@ summary(fit <- mkinfit(SFORB_SFO, FOCUS_2006_D))
 P <- c(state.ini.optim, parms.optim)
 modCost(cost, P)
 fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = 0)
+MCMC <- modMCMC(cost, c(state.ini.optim, parms.optim))
 
 d <- FOCUS_2006_C
 d2 <- FOCUS_2006_C
