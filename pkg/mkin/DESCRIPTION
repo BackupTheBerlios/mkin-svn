@@ -9,7 +9,8 @@ Maintainer: Johannes Ranke <jranke@harlan.com>
 Description: Calculation routines based on the FOCUS Kinetics Report (2006). Includes 
   a function for conveniently defining differential equation models, choice of
   the optimisation methods made available by the FME package (default is a
-  Levenberg-Marquardt variant).
+  Levenberg-Marquardt variant).  Please note that no warranty is implied for
+  correctness of results or fitness for a particular purpose.
 Depends: FME
 License: GPL
 LazyLoad: yes
