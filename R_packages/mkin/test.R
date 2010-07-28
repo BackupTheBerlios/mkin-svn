@@ -1,3 +1,9 @@
+# $Id$
+# Copyright (C) 2010 Johannes Ranke
+# Test script containing various snippets of R code for testing the mkin package
+# Part of these are already integrated into the package vignette and/or the 
+# unit tests under inst/unitTests
+
 library(mkin)
 source("R/mkinmod.R")
 SFO <- mkinmod(parent = list(type = "SFO"))

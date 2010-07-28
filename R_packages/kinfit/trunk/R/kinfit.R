@@ -1,4 +1,3 @@
-# $HeadURL$
 # $Id$
 
 # Copyright (C) 2008-2010 Johannes Ranke

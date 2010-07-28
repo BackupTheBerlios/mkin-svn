@@ -1,3 +1,4 @@
+% $Id$
 %%\VignetteIndexEntry{Routines for fitting kinetic models to chemical degradation data}
 %%VignetteDepends{nls}
 %%\usepackage{Sweave}

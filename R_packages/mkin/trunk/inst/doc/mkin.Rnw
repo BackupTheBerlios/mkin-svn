@@ -1,3 +1,4 @@
+% $Id$
 %%\VignetteIndexEntry{Routines for fitting kinetic models with one or more state variables to chemical degradation data}
 %%VignetteDepends{FME}
 %%\usepackage{Sweave}

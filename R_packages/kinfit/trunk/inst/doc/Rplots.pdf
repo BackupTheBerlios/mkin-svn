@@ -2,10 +2,10 @@
 %Å‚Å„ÅœÅ”\r
 1 0 obj
 <<
-/CreationDate (D:20100412222425)
-/ModDate (D:20100412222425)
+/CreationDate (D:20100728141835)
+/ModDate (D:20100728141835)
 /Title (R Graphics Output)
-/Producer (R 2.10.1)
+/Producer (R 2.11.0)
 /Creator (R)
 >>
 endobj
@@ -28,7 +28,7 @@ endobj
 /Length 7 0 R
 >>
 stream
-q
+1 J 1 j q
 Q q 59.04 73.44 414.72 371.52 re W n
 0.000 0.000 0.000 RG
 0.75 w
@@ -80,25 +80,25 @@ Q q
 461.63 73.44 m 461.63 66.24 l S
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 16.00 0.00 -0.00 16.00 69.95 47.52 Tm (0) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 69.95 47.52 Tm (0) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 130.04 47.52 Tm (20) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 130.04 47.52 Tm (20) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 194.58 47.52 Tm (40) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 194.58 47.52 Tm (40) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 259.12 47.52 Tm (60) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 259.12 47.52 Tm (60) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 323.66 47.52 Tm (80) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 323.66 47.52 Tm (80) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 383.75 47.52 Tm (100) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 383.75 47.52 Tm (100) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 448.28 47.52 Tm (120) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 448.28 47.52 Tm (120) Tj
 ET
 59.04 87.20 m 59.04 410.58 l S
 59.04 87.20 m 51.84 87.20 l S
@@ -130,7 +130,7 @@ S
 Q q
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 16.00 0.00 -0.00 16.00 225.30 18.72 Tm [(Time [da) 30 (ys])] TJ
+/F2 1 Tf 16.00 0.00 0.00 16.00 225.30 18.72 Tm [(Time [da) 30 (ys])] TJ
 ET
 BT
 /F2 1 Tf 0.00 16.00 -16.00 0.00 12.96 140.88 Tm [(P) 40 (arent [% of applied r) 10 (adioactivity])] TJ
@@ -583,30 +583,30 @@ BT
 ET
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 12.00 0.00 -0.00 12.00 312.90 407.68 Tm (Compound XY measured) Tj
+/F2 1 Tf 12.00 0.00 0.00 12.00 312.90 407.68 Tm (Compound XY measured) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 -0.00 12.00 312.90 393.28 Tm (Fitted SFO model) Tj
+/F2 1 Tf 12.00 0.00 0.00 12.00 312.90 393.28 Tm (Fitted SFO model) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 -0.00 12.00 312.90 378.88 Tm (Fitted FOMC model) Tj
+/F2 1 Tf 12.00 0.00 0.00 12.00 312.90 378.88 Tm (Fitted FOMC model) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 -0.00 12.00 312.90 364.48 Tm (Fitted DFOP model) Tj
+/F2 1 Tf 12.00 0.00 0.00 12.00 312.90 364.48 Tm (Fitted DFOP model) Tj
 ET
 BT
-/F2 1 Tf 12.00 0.00 -0.00 12.00 312.90 350.08 Tm (Fitted HS model) Tj
+/F2 1 Tf 12.00 0.00 0.00 12.00 312.90 350.08 Tm (Fitted HS model) Tj
 ET
 Q q
 BT
 0.000 0.000 0.000 rg
-/F3 1 Tf 14.00 0.00 -0.00 14.00 208.45 469.45 Tm (FOCUS dataset C) Tj
+/F3 1 Tf 14.00 0.00 0.00 14.00 208.45 469.45 Tm (FOCUS dataset C) Tj
 ET
 Q
 endstream
 endobj
 7 0 obj
-9571
+9565
 endobj
 8 0 obj
 <<
@@ -621,7 +621,7 @@ endobj
 /Length 10 0 R
 >>
 stream
-q
+1 J 1 j q
 Q q 59.04 73.44 414.72 371.52 re W n
 Q q 59.04 73.44 414.72 371.52 re W n
 0.000 0.000 0.000 RG
@@ -674,25 +674,25 @@ Q q
 461.63 73.44 m 461.63 66.24 l S
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 16.00 0.00 -0.00 16.00 69.95 47.52 Tm (0) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 69.95 47.52 Tm (0) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 130.04 47.52 Tm (20) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 130.04 47.52 Tm (20) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 194.58 47.52 Tm (40) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 194.58 47.52 Tm (40) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 259.12 47.52 Tm (60) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 259.12 47.52 Tm (60) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 323.66 47.52 Tm (80) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 323.66 47.52 Tm (80) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 383.75 47.52 Tm (100) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 383.75 47.52 Tm (100) Tj
 ET
 BT
-/F2 1 Tf 16.00 0.00 -0.00 16.00 448.28 47.52 Tm (120) Tj
+/F2 1 Tf 16.00 0.00 0.00 16.00 448.28 47.52 Tm (120) Tj
 ET
 59.04 91.83 m 59.04 426.57 l S
 59.04 91.83 m 51.84 91.83 l S
@@ -724,19 +724,19 @@ S
 Q q
 BT
 0.000 0.000 0.000 rg
-/F2 1 Tf 16.00 0.00 -0.00 16.00 225.30 18.72 Tm [(Time [da) 30 (ys])] TJ
+/F2 1 Tf 16.00 0.00 0.00 16.00 225.30 18.72 Tm [(Time [da) 30 (ys])] TJ
 ET
 BT
 /F2 1 Tf 0.00 16.00 -16.00 0.00 12.96 133.01 Tm [(Residual [% of applied r) 10 (adioactivity])] TJ
 ET
 BT
-/F2 1 Tf 14.00 0.00 -0.00 14.00 204.16 469.45 Tm (Residuals of SFO fit) Tj
+/F2 1 Tf 14.00 0.00 0.00 14.00 204.16 469.45 Tm (Residuals of SFO fit) Tj
 ET
 Q
 endstream
 endobj
 10 0 obj
-2318
+2317
 endobj
 3 0 obj
 <<
@@ -753,16 +753,14 @@ endobj
 <<
 /ProcSet [/PDF /Text]
 /Font << /F1 12 0 R /F2 13 0 R /F3 14 0 R >>
-/ExtGState << >>
+/ExtGState << /GSais 15 0 R >>
 >>
 endobj
 11 0 obj
 <<
 /Type /Encoding
 /BaseEncoding /WinAnsiEncoding
-/Differences [ 45/minus 96/quoteleft
-144/dotlessi /grave /acute /circumflex /tilde /macron /breve /dotaccent
-/dieresis /.notdef /ring /cedilla /.notdef /hungarumlaut /ogonek /caron /space]
+/Differences [ 45/minus ]
 >>
 endobj
 12 0 obj
@@ -787,29 +785,36 @@ endobj
 /BaseFont /Helvetica-Bold
 /Encoding 11 0 R
 >> endobj
+15 0 obj
+<<
+/Type /ExtGState
+/AIS false
+>>
+endobj
 xref
-0 15
+0 16
 0000000000 65535 f 
 0000000021 00000 n 
 0000000164 00000 n 
-0000012410 00000 n 
-0000012499 00000 n 
+0000012403 00000 n 
+0000012492 00000 n 
 0000000213 00000 n 
 0000000293 00000 n 
-0000009917 00000 n 
-0000009937 00000 n 
-0000010017 00000 n 
-0000012389 00000 n 
-0000012604 00000 n 
-0000012862 00000 n 
-0000012946 00000 n 
-0000013044 00000 n 
+0000009911 00000 n 
+0000009931 00000 n 
+0000010011 00000 n 
+0000012382 00000 n 
+0000012611 00000 n 
+0000012706 00000 n 
+0000012790 00000 n 
+0000012888 00000 n 
+0000012991 00000 n 
 trailer
 <<
-/Size 15
+/Size 16
 /Info 1 0 R
 /Root 2 0 R
 >>
 startxref
-13147
+13041
 %%EOF

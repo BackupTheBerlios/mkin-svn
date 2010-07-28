@@ -1,3 +1,5 @@
+# $Id$
+# Adapted from a version around 2.9 of the rcdk package by Rajarshi Guha
 if(require("RUnit", quietly=TRUE)) {
  
   ## --- Setup ---
