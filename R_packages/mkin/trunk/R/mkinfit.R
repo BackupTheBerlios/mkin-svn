@@ -186,10 +186,11 @@ mkinfit <- function(mkinmod, observed,
   }
   fit$errmin <- errmin
 
-  # Calculate dissipation times DT50 and DT90
+  # Calculate dissipation times DT50 and DT90 and formation fractions
   parms.all = c(fit$par, parms.fixed)
   fit$distimes <- data.frame(DT50 = rep(NA, length(obs_vars)), DT90 = rep(NA, length(obs_vars)), 
     row.names = obs_vars)
+  fit$ff <- vector()
   for (obs_var in obs_vars) {
       type = names(mkinmod$map[[obs_var]])[1]  
       if (type == "SFO") {
@@ -197,12 +198,22 @@ mkinfit <- function(mkinmod, observed,
         k_tot = sum(parms.all[k_names])
         DT50 = log(2)/k_tot
         DT90 = log(10)/k_tot
+        for (k_name in k_names)
+        {
+          fit$ff[[sub("k_", "", k_name)]] = parms.all[[k_name]] / k_tot
+        }
       }
       if (type == "FOMC") {
         alpha = parms.all["alpha"]
         beta = parms.all["beta"]
         DT50 = beta * (2^(1/alpha) - 1)
         DT90 = beta * (10^(1/alpha) - 1)
+        ff_names = grep(paste("f_to_", sep="_"), names(parms.all), value=TRUE)
+        for (ff_name in ff_names)
+        {
+          fit$ff[[sub("f_to", obs_var, ff_name)]] = parms.all[[ff_name]]
+        }
+        fit$ff[[paste(obs_var, "sink", sep="_")]] = 1 - sum(parms.all[ff_names])
       }
       if (type == "SFORB") {
         # FOCUS kinetics (2006), p. 60 f
@@ -227,6 +238,10 @@ mkinfit <- function(mkinmod, observed,
         f_90 <- function(t) (SFORB_fraction(t) - 0.1)^2
         DT90.o <- optimize(f_90, c(0.01, 1000))$minimum
         if (abs(DT90.o - max_DT) < 0.01) DT90 = NA else DT90 = DT90.o
+        for (k_out_name in k_out_names)
+        {
+          fit$ff[[sub("k_", "", k_out_name)]] = parms.all[[k_out_name]] / k_1output
+        }
       }
       fit$distimes[obs_var, ] = c(DT50, DT90)
   }
@@ -242,7 +257,7 @@ mkinfit <- function(mkinmod, observed,
   return(fit)
 }
 
-summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, cov = FALSE,...) {
+summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, ff = TRUE, cov = FALSE,...) {
   ans <- FME:::summary.modFit(object, cov = cov)
   ans$diffs <- object$diffs
   if(data) ans$data <- object$data
@@ -250,6 +265,7 @@ summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, cov = FALSE,..
   ans$fixed <- object$fixed
   ans$errmin <- object$errmin 
   if(distimes) ans$distimes <- object$distimes
+  if(ff) ans$ff <- object$ff
   class(ans) <- c("summary.mkinfit", "summary.modFit") 
   return(ans)  
 }
@@ -282,6 +298,12 @@ print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), .
   if(printdistimes){
     cat("\nEstimated disappearance times\n")
     print(x$distimes, digits=digits,...)
+  }    
+
+  printff <- !is.null(x$ff)
+  if(printdistimes){
+    cat("\nEstimated formation fractions\n")
+    print(data.frame(ff = x$ff), digits=digits,...)
   }    
 
   printcor <- !is.null(x$cov.unscaled)
