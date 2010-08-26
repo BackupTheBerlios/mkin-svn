@@ -296,13 +296,13 @@ print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), .
 
   printdistimes <- !is.null(x$distimes)
   if(printdistimes){
-    cat("\nEstimated disappearance times\n")
+    cat("\nEstimated disappearance times:\n")
     print(x$distimes, digits=digits,...)
   }    
 
   printff <- !is.null(x$ff)
   if(printdistimes){
-    cat("\nEstimated formation fractions\n")
+    cat("\nEstimated formation fractions:\n")
     print(data.frame(ff = x$ff), digits=digits,...)
   }    
 

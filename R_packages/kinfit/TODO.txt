@@ -1,0 +1,3 @@
+- Possibility to fix M0
+- Improve treatment of failed fits (non-convergence)
+- Output time stamp and R + package version numbers
