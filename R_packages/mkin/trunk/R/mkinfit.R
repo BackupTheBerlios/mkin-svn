@@ -26,6 +26,7 @@ mkinfit <- function(mkinmod, observed,
   fixed_initials = names(mkinmod$diffs)[-1],
   plot = FALSE, quiet = FALSE,
   err = NULL, weight = "none", scaleVar = FALSE,
+  atol = 1e-6,
   ...)
 {
   mod_vars <- names(mkinmod$diffs)
@@ -86,8 +87,9 @@ mkinfit <- function(mkinmod, observed,
       y = odeini,
       times = outtimes,
       func = mkindiff, 
-      parms = odeparms)
-
+      parms = odeparms,
+      atol = atol
+    )
   
     # Output transformation for models with unobserved compartments like SFORB
     out_transformed <- data.frame(time = out[,"time"])
@@ -208,12 +210,13 @@ mkinfit <- function(mkinmod, observed,
         beta = parms.all["beta"]
         DT50 = beta * (2^(1/alpha) - 1)
         DT90 = beta * (10^(1/alpha) - 1)
-        ff_names = grep(paste("f_to_", sep="_"), names(parms.all), value=TRUE)
+        ff_names = names(mkinmod$ff)
         for (ff_name in ff_names)
         {
-          fit$ff[[sub("f_to", obs_var, ff_name)]] = parms.all[[ff_name]]
+          fit$ff[[paste(obs_var, ff_name, sep="_")]] = 
+            eval(parse(text = mkinmod$ff[ff_name]), as.list(parms.all))
         }
-        fit$ff[[paste(obs_var, "sink", sep="_")]] = 1 - sum(parms.all[ff_names])
+        fit$ff[[paste(obs_var, "sink", sep="_")]] = 1 - sum(fit$ff)
       }
       if (type == "SFORB") {
         # FOCUS kinetics (2006), p. 60 f

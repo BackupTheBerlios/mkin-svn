@@ -33,8 +33,10 @@ mkinmod <- function(...)
   # Establish list of differential equations
   for (varname in obs_vars)
   {
-    if(is.null(spec[[varname]]$type)) stop("Every argument to mkinmod must be a list containing a type component")
-    if(!spec[[varname]]$type %in% c("SFO", "FOMC", "SFORB")) stop("Available types are SFO, FOMC and SFORB only")
+    if(is.null(spec[[varname]]$type)) stop(
+      "Every argument to mkinmod must be a list containing a type component")
+    if(!spec[[varname]]$type %in% c("SFO", "FOMC", "SFORB")) stop(
+      "Available types are SFO, FOMC and SFORB only")
     new_parms <- vector()
 
     # New (sub)compartments (boxes) needed for the model type
@@ -49,24 +51,33 @@ mkinmod <- function(...)
     # Start a new differential equation for each new box
     new_diffs <- paste("d_", new_boxes, " =", sep="")
 
-    # Construct terms for transfer to sink and add if appropriate
+    # Turn on sink if not specified otherwise
     if(is.null(spec[[varname]]$sink)) spec[[varname]]$sink <- TRUE
+
+    # Construct and add FOMC term and add FOMC parameters if needed
+    if(spec[[varname]]$type == "FOMC") {
+      if(match(varname, obs_vars) != 1) {
+        stop("Type FOMC is only allowed for the first compartment, which is assumed to be the source compartment")
+      }
+      if(spec[[varname]]$sink == FALSE) {
+        stop("Turning off the sink for the FOMC model is not implemented")
+      }
+      # From p. 53 of the FOCUS kinetics report
+      fomc_term <- paste("(alpha/beta) * ((time/beta) + 1)^-1 *", new_boxes[[1]])
+      new_diffs[[1]] <- paste(new_diffs[[1]], "-", fomc_term)
+      new_parms <- c("alpha", "beta")
+      ff <- vector()
+    }
+
+    # Construct terms for transfer to sink and add if appropriate
+
     if(spec[[varname]]$sink) {
-      # Add first-order sink term to first (or only) box for SFO and SFORB models
+      # Add first-order sink term to first (or only) box for SFO and SFORB
       if(spec[[varname]]$type %in% c("SFO", "SFORB")) {
         k_compound_sink <- paste("k", new_boxes[[1]], "sink", sep="_")
         sink_term <- paste("-", k_compound_sink, "*", new_boxes[[1]])
         new_diffs[[1]] <- paste(new_diffs[[1]], sink_term)
         new_parms <- k_compound_sink
-      }
-      if(spec[[varname]]$type == "FOMC") {
-        if(match(varname, obs_vars) != 1) {
-          stop("Type FOMC is only allowed for the first compartment, which is assumed to be the source compartment")
-        }
-        # From p. 53 of the FOCUS kinetics report
-        fomc_term <- paste("(alpha/beta) * ((time/beta) + 1)^-1 *", new_boxes[[1]])
-        new_diffs[[1]] <- paste(new_diffs[[1]], "-", fomc_term)
-        new_parms <- c("alpha", "beta")
       }
     }
    
@@ -86,7 +97,6 @@ mkinmod <- function(...)
     names(new_diffs) <- new_boxes
     diffs <- c(diffs, new_diffs)
   }
-
   # Transfer between compartments
   for (varname in obs_vars) {
     to <- spec[[varname]]$to
@@ -102,27 +112,35 @@ mkinmod <- function(...)
           SFORB = paste(target, "free", sep="_"))
         if(spec[[varname]]$type %in% c("SFO", "SFORB")) {
           k_from_to <- paste("k", origin_box, target_box, sep="_")
-          diffs[[origin_box]] <- paste(diffs[[origin_box]], "-", k_from_to, "*", origin_box)
-          diffs[[target_box]] <- paste(diffs[[target_box]], "+", k_from_to, "*", origin_box)
+          diffs[[origin_box]] <- paste(diffs[[origin_box]], "-", 
+            k_from_to, "*", origin_box)
+          diffs[[target_box]] <- paste(diffs[[target_box]], "+", 
+            k_from_to, "*", origin_box)
           parms <- c(parms, k_from_to)
         }
         if(spec[[varname]]$type == "FOMC") {
           fraction_to_target = paste("f_to", target, sep="_")
-          fraction_not_to_target = paste("(1 - ", fraction_to_target, ")", sep="")
+          fraction_not_to_target = paste("(1 - ", fraction_to_target, ")", 
+            sep="")
           if(is.null(fraction_left)) {
             fraction_really_to_target = fraction_to_target
             fraction_left = fraction_not_to_target
           } else {
-            fraction_really_to_target = paste(fraction_left, " * ", fraction_to_target, sep="")
-            fraction_left = paste(fraction_left, " * ", fraction_not_to_target, sep="")
+            fraction_really_to_target = paste(fraction_left, " * ", 
+              fraction_to_target, sep="")
+            fraction_left = paste(fraction_left, " * ", 
+              fraction_not_to_target, sep="")
           }
-          diffs[[target_box]] <- paste(diffs[[target_box]], "+", fraction_really_to_target, "*", fomc_term)
+          ff[target_box] = fraction_really_to_target
+          diffs[[target_box]] <- paste(diffs[[target_box]], "+", 
+            ff[target_box], "*", fomc_term)
           parms <- c(parms, fraction_to_target)
         }
       }
     }
   }
   model <- list(diffs = diffs, parms = parms, map = map)
+  if (exists("ff")) model$ff = ff
   class(model) <- "mkinmod"
   invisible(model)
 }

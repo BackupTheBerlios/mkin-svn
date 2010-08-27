@@ -6,3 +6,4 @@
 - Version numbers and timestamp in output
 - Specify default range from 0 to 1 for formation fractions
 - Calculate confidence intervals for predictions (DT50 and DT90)
+- Use Eigenvalues and Eigenvectors for fitting linear systems

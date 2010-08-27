@@ -3,7 +3,7 @@ Type: Package
 Title: Routines for fitting kinetic models with one or more state
   variables to chemical degradation data
 Version: 0.7-9
-Date: 2010-08-26
+Date: 2010-08-27
 Author: Johannes Ranke
 Maintainer: Johannes Ranke <jranke@users.berlios.de>
 Description: Calculation routines based on the FOCUS Kinetics Report (2006). Includes 
@@ -11,7 +11,7 @@ Description: Calculation routines based on the FOCUS Kinetics Report (2006). Inc
   the optimisation methods made available by the FME package (default is a
   Levenberg-Marquardt variant).  Please note that no warranty is implied for
   correctness of results or fitness for a particular purpose.
-Depends: FME
+Depends: FME, deSolve
 License: GPL
 LazyLoad: yes
 LazyData: yes

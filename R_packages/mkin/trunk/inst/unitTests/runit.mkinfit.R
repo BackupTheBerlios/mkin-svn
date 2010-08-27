@@ -37,19 +37,36 @@ test.mkinmod.schaefer07_complex_example <- function()
   r$mkin <- c(
     k_parent,
     s$distimes["parent", "DT50"],
-    k_parent_A1/k_parent,
+    s$ff["parent_A1"],
     sum(k_A1_sink, k_A1_A2),
     s$distimes["A1", "DT50"],
-    k_parent_B1/k_parent,
+    s$ff["parent_B1"],
     k_B1_sink,
     s$distimes["B1", "DT50"],
-    k_parent_C1/k_parent,
+    s$ff["parent_C1"],
     k_C1_sink,
     s$distimes["C1", "DT50"],
-    k_A1_A2/(k_A1_A2 + k_A1_sink),
+    s$ff["A1_A2"],
     k_A2_sink,
     s$distimes["A2", "DT50"])
   r$means <- (r$KinGUI + r$ModelMaker)/2
   r$mkin.deviation <- abs(round(100 * ((r$mkin - r$means)/r$means), digits=1))
   checkIdentical(r$mkin.deviation < 10, rep(TRUE, length(r$mkin.deviation)))
+}
+test.mkinmod.FOMC_ffs <- function()
+{
+  schaefer07_FOMC_ffs <- mkinmod(
+    parent = list(type = "FOMC", to = c("A1", "B1", "C1"), sink = TRUE),
+    A1 = list(type = "SFO", to = "A2"),
+    B1 = list(type = "SFO"),
+    C1 = list(type = "SFO"),
+    A2 = list(type = "SFO"))
+  
+  fit <- mkinfit(schaefer07_FOMC_ffs,
+    mkin_wide_to_long(schaefer07_complex_case, time = "time"),
+    parms.ini = c(5, 85, 0.1, 0.1, 0.01, 0.1, 0.1, 0.1, 0.1, 0.1), 
+    atol = 1e-5,
+    plot=TRUE)
+  s <- summary(fit)
+  s
 }

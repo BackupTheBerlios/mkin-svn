@@ -15,7 +15,9 @@ mkinfit(mkinmod, observed,
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
   lower = 0, upper = Inf, 
   fixed_parms = NULL, fixed_initials = names(mkinmod$diffs)[-1], 
-  plot = FALSE, quiet = FALSE, err = NULL, weight = "none", scaleVar = FALSE, ...)
+  plot = FALSE, quiet = FALSE, err = NULL, weight = "none", 
+  scaleVar = FALSE, 
+  atol = 1e-6, ...)
 }
 \arguments{
   \item{mkinmod}{
@@ -76,6 +78,10 @@ mkinfit(mkinmod, observed,
   \item{scaleVar}{
     Will be passed to \code{\link{modCost}}. Default is not to scale Variables according
     to the number of observations.
+  }
+  \item{atol}{
+    Absolute error tolerance, passed to \code{\link{ode}}. Default is 1e-6 as in 
+    \code{\link{lsoda}}.
   }
   \item{\dots}{
     Further arguments that will be passed to \code{\link{modFit}}. 

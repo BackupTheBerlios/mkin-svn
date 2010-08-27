@@ -110,9 +110,16 @@ test.mkinmod.FOMC_SFO2 <- function()
     m1 = "d_m1 = - k_m1_sink * m1 + f_to_m1 * (alpha/beta) * ((time/beta) + 1)^-1 * parent",
     m2 = "d_m2 = - k_m2_sink * m2 + (1 - f_to_m1) * f_to_m2 * (alpha/beta) * ((time/beta) + 1)^-1 * parent"
   )
-  FOMC_SFO2.parms <- c("alpha", "beta", "k_m1_sink", "k_m2_sink", "f_to_m1", "f_to_m2")
-  FOMC_SFO2.map <- list(parent = c(FOMC = "parent"), m1 = c(SFO = "m1"), m2 = c(SFO = "m2"))
-  FOMC_SFO2 <- list(diffs = FOMC_SFO2.diffs, parms = FOMC_SFO2.parms, map = FOMC_SFO2.map)
+  FOMC_SFO2.parms <- c("alpha", "beta", "k_m1_sink", "k_m2_sink", 
+    "f_to_m1", "f_to_m2")
+  FOMC_SFO2.map <- list(parent = c(FOMC = "parent"), 
+    m1 = c(SFO = "m1"), 
+    m2 = c(SFO = "m2"))
+  FOMC_SFO2.ff <- c(
+    m1 = "f_to_m1", 
+    m2 = "(1 - f_to_m1) * f_to_m2")
+  FOMC_SFO2 <- list(diffs = FOMC_SFO2.diffs, parms = FOMC_SFO2.parms, 
+    map = FOMC_SFO2.map, ff = FOMC_SFO2.ff)
   class(FOMC_SFO2) <- "mkinmod"
   FOMC_SFO2.mkinmod <- mkinmod(
     parent = list(type = "FOMC", to = c("m1", "m2"), sink=TRUE),
