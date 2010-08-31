@@ -79,7 +79,7 @@ barrier for \RR{} newcomers.
 \subsection{Data format}
 
 The following listing shows example dataset C from the FOCUS kinetics
-report as distributed with the \Rpackage{kinfit} package
+report as distributed with the \Rpackage{mkin} package
 
 <<FOCUS_2006_C_data, echo=TRUE, eval=TRUE>>=
 library("mkin")
@@ -102,8 +102,9 @@ as shown in the following listing
 
 <<data_format, echo=TRUE>>=
 example_data <- data.frame(
+  name = rep("parent", 9),
   time = c(0, 1, 3, 7, 14, 28, 63, 91, 119),
-  parent = c(85.1, 57.9, 29.9, 14.6, 9.7, 6.6, 4, 3.9, 0.6)
+  value = c(85.1, 57.9, 29.9, 14.6, 9.7, 6.6, 4, 3.9, 0.6)
 )
 @
 
@@ -123,6 +124,9 @@ SFORB_SFO <- mkinmod(
   m1 = list(type = "SFO"))
 @
 
+The model definitions given above define sets of linear first-order ordinary
+differential equations.
+
 \subsection{Fitting the model}
 
 Then the model parameters should be fitted to the data. The function
@@ -133,12 +137,16 @@ from the same package.
 <<model_fitting, echo=TRUE>>=
 # Do not show significance stars as they interfere with vignette generation
 options(show.signif.stars = FALSE)
-SFO.fit <- mkinfit(SFO, FOCUS_2006_C)
+SFO.fit <- mkinfit(SFO, FOCUS_2006_C, lower = c(k_parent_sink = 0))
 summary(SFO.fit)
-SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C)
+SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C, plot=TRUE, eigen=FALSE)
 summary(SFORB.fit)
-SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
-summary(SFO_SFO.fit)
+SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D, plot=TRUE)
+SFO_SFO.fit.ode <- mkinfit(SFO_SFO, FOCUS_2006_D, plot=TRUE, eigen=FALSE)
+summary(SFO_SFO.fit, data=FALSE)
+summary(SFO_SFO.fit.ode, data=FALSE)
+SFORB_SFO.fit <- mkinfit(SFORB_SFO, FOCUS_2006_D)
+summary(SFORB_SFO.fit)
 @
 
 \bibliographystyle{plainnat}

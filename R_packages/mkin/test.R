@@ -5,7 +5,8 @@
 # unit tests under inst/unitTests
 
 library(mkin)
-source("R/mkinmod.R")
+source("trunk/R/mkinmod.R")
+source("trunk/R/mkinfit.R")
 SFO <- mkinmod(parent = list(type = "SFO"))
 FOMC <- mkinmod(parent = list(type = "FOMC"))
 SFORB <- mkinmod(parent = list(type = "SFORB"))
@@ -21,10 +22,9 @@ ws_back <- mkinmod(water = list(type = "SFO", to = "sediment", sink = TRUE),
 
 source("R/mkinfit.R")
 summary(fit <- mkinfit(SFO, FOCUS_2006_A))
-fit <- mkinfit(SFO, FOCUS_2006_A)
-fit <- mkinfit(FOMC, FOCUS_2006_C)
+summary(fit <- mkinfit(FOMC, FOCUS_2006_C))
 
-summary(fit <- mkinfit(SFORB, FOCUS_2006_C))
+summary(fit <- mkinfit(SFORB, FOCUS_2006_C, eigen=FALSE))
 
 summary(fit)
 

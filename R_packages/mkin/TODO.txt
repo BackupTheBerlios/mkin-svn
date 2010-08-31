@@ -1,4 +1,4 @@
-- Add unit tests
+- More unit tests
 - Document validation against fits documented in chapter 13 of FOCUS (2006)
 - Reproduce example analyses (L1, L2, ...) in FOCUS (2006)
 - Export cost function together with mkinfit object, in order to make MCMC runs
@@ -6,4 +6,4 @@
 - Version numbers and timestamp in output
 - Specify default range from 0 to 1 for formation fractions
 - Calculate confidence intervals for predictions (DT50 and DT90)
-- Use Eigenvalues and Eigenvectors for fitting linear systems
+- Fix the use of Eigenvalues and Eigenvectors for fitting SFORB systems

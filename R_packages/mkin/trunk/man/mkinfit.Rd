@@ -15,6 +15,7 @@ mkinfit(mkinmod, observed,
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
   lower = 0, upper = Inf, 
   fixed_parms = NULL, fixed_initials = names(mkinmod$diffs)[-1], 
+  eigen = TRUE,
   plot = FALSE, quiet = FALSE, err = NULL, weight = "none", 
   scaleVar = FALSE, 
   atol = 1e-6, ...)
@@ -60,6 +61,11 @@ mkinfit(mkinmod, observed,
   \item{fixed_initials}{
     The names of model variables for which the initial state at time 0 should be excluded
     from the optimisation. Defaults to all state variables except for the first one.
+  }
+  \item{eigen}{
+    Should the solution of the system of differential equations be based on the 
+    spectral decomposition of the coefficient matrix in cases that this is
+    possible?
   }
   \item{plot}{
     Should the observed values and the numerical solutions be plotted at each stage

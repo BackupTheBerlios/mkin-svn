@@ -31,6 +31,7 @@ mkinmod(...)
     \item{parms}{ A vector of parameter names occurring in the differential equations. }
     \item{map}{ A list containing named character vectors for each observed variable, specifying
       the modelling variables by which it is represented. }
+    \item{coefmat}{ The coefficient matrix, if the system of differential equations can be represented by one. }
 }
 \author{
   Johannes Ranke <jranke@{harlan.com,uni-bremen.de}>

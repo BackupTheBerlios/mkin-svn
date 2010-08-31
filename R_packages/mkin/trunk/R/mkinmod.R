@@ -25,10 +25,14 @@ mkinmod <- function(...)
 
   # The returned model will be a list of character vectors, containing
   # differential equations, parameter names and a mapping from model variables
-  # to observed variables
+  # to observed variables. If possible, a matrix representation of the 
+  # differential equations is included
   parms <- vector()
   diffs <- vector()
   map <- list()
+  if(spec[[1]]$type == "FOMC") {
+    mat = FALSE 
+  } else mat = TRUE
 
   # Establish list of differential equations
   for (varname in obs_vars)
@@ -67,7 +71,7 @@ mkinmod <- function(...)
       new_diffs[[1]] <- paste(new_diffs[[1]], "-", fomc_term)
       new_parms <- c("alpha", "beta")
       ff <- vector()
-    }
+    } 
 
     # Construct terms for transfer to sink and add if appropriate
 
@@ -140,6 +144,32 @@ mkinmod <- function(...)
     }
   }
   model <- list(diffs = diffs, parms = parms, map = map)
+
+  # Create coefficient matrix if appropriate
+  if (mat) {
+    boxes <- names(diffs)
+    n <- length(boxes)
+    m <- matrix(nrow=n, ncol=n, dimnames=list(boxes, boxes))
+    for (from in boxes) {
+      for (to in boxes) {
+        if (from == to) {
+          k.candidate = paste("k", from, c(boxes, "sink"), sep="_")
+          k.effective = intersect(model$parms, k.candidate)
+          m[from,to] = ifelse(length(k.effective) > 0,
+              paste("-", k.effective, collapse = " "), "0")
+        } else {
+          k.candidate = paste("k", from, to, sep="_")
+          k.candidate = sub("free.*bound", "free_bound", k.candidate)
+          k.candidate = sub("bound.*free", "bound_free", k.candidate)
+          k.effective = intersect(model$parms, k.candidate)
+          m[from, to] = ifelse(length(k.effective) > 0,
+              k.effective, "0")
+        }
+      }
+    }
+    model$coefmat <- m
+  }
+
   if (exists("ff")) model$ff = ff
   class(model) <- "mkinmod"
   invisible(model)
