@@ -62,8 +62,9 @@ test.mkinmod.SFORB <- function()
   SFORB.parms <- c("k_parent_free_sink", "k_parent_free_bound", "k_parent_bound_free")
   SFORB.map <- list(parent = c(SFORB = "parent_free", SFORB = "parent_bound"))
   vars <- paste("parent", c("free", "bound"), sep="_")
-  SFORB.coefmat <- matrix(c("- k_parent_free_sink", "k_parent_free_bound",
-    "k_parent_bound_free", "0"), nrow=2, byrow=TRUE, 
+  SFORB.coefmat <- matrix(
+    c("- k_parent_free_sink - k_parent_free_bound", "k_parent_bound_free",
+      "k_parent_free_bound", "- k_parent_bound_free"), nrow=2, byrow=TRUE, 
     dimnames=list(vars, vars))
   SFORB <- list(diffs = SFORB.diffs, parms = SFORB.parms, 
     map = SFORB.map, coefmat = SFORB.coefmat)
@@ -83,8 +84,8 @@ test.mkinmod.SFO_SFO <- function()
   SFO_SFO.parms <- c("k_parent_sink", "k_m1_sink", "k_parent_m1")
   SFO_SFO.map <- list(parent = c(SFO = "parent"), m1 = c(SFO = "m1"))
   vars <- c("parent", "m1")
-  SFO_SFO.coefmat <- matrix(c("- k_parent_sink - k_parent_m1", "k_parent_m1",
-          "0", "- k_m1_sink"), nrow=2, byrow=TRUE,
+  SFO_SFO.coefmat <- matrix(c("- k_parent_sink - k_parent_m1", 
+          "0", "k_parent_m1", "- k_m1_sink"), nrow=2, byrow=TRUE,
       dimnames=list(vars, vars))
   SFO_SFO <- list(diffs = SFO_SFO.diffs, parms = SFO_SFO.parms, 
     map = SFO_SFO.map, coefmat = SFO_SFO.coefmat)
@@ -107,10 +108,9 @@ test.mkinmod.SFO_SFO2 <- function()
   SFO_SFO2.map <- list(parent = c(SFO = "parent"), m1 = c(SFO = "m1"), m2 = c(SFO = "m2"))
   vars <- c("parent", "m1", "m2")
   SFO_SFO2.coefmat <- matrix(
-      c("- k_parent_sink - k_parent_m1 - k_parent_m2", 
-          "k_parent_m1", "k_parent_m2",
-          "0", "- k_m1_sink", "0",
-          "0", "0", "- k_m2_sink"), nrow=3, byrow=TRUE,
+      c("- k_parent_sink - k_parent_m1 - k_parent_m2", "0", "0",
+          "k_parent_m1", "- k_m1_sink", "0",
+          "k_parent_m2", "0", "- k_m2_sink"), nrow=3, byrow=TRUE,
       dimnames=list(vars, vars))
   SFO_SFO2 <- list(diffs = SFO_SFO2.diffs, parms = SFO_SFO2.parms, 
       map = SFO_SFO2.map, coefmat = SFO_SFO2.coefmat)

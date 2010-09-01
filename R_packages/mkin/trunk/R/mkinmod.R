@@ -154,6 +154,8 @@ mkinmod <- function(...)
       for (to in boxes) {
         if (from == to) {
           k.candidate = paste("k", from, c(boxes, "sink"), sep="_")
+          k.candidate = sub("free.*bound", "free_bound", k.candidate)
+          k.candidate = sub("bound.*free", "bound_free", k.candidate)
           k.effective = intersect(model$parms, k.candidate)
           m[from,to] = ifelse(length(k.effective) > 0,
               paste("-", k.effective, collapse = " "), "0")
@@ -162,7 +164,7 @@ mkinmod <- function(...)
           k.candidate = sub("free.*bound", "free_bound", k.candidate)
           k.candidate = sub("bound.*free", "bound_free", k.candidate)
           k.effective = intersect(model$parms, k.candidate)
-          m[from, to] = ifelse(length(k.effective) > 0,
+          m[to, from] = ifelse(length(k.effective) > 0,
               k.effective, "0")
         }
       }

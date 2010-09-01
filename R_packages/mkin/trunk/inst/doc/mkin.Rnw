@@ -125,28 +125,31 @@ SFORB_SFO <- mkinmod(
 @
 
 The model definitions given above define sets of linear first-order ordinary
-differential equations.
+differential equations. In these cases, a coefficient matrix is also returned.
+
+Other models that include time on the right-hand side of the differential 
+equation are the first-order multi-compartment (FOMC) model and the
+Hockey-Stick (HS) model. These can only be used for the parent compound.
 
 \subsection{Fitting the model}
 
 Then the model parameters should be fitted to the data. The function
 \Robject{mkinfit} internally creates a cost function using \Robject{modCost}
 from the \Rpackage{FME} package and the produces a fit using \Robject{modFit}
-from the same package.
+from the same package. In cases of linear first-order differential 
+equations, the solution used for calculating the cost function is based
+on the fundamental system of the coefficient matrix, as proposed by 
+\citet{bates88}.
 
 <<model_fitting, echo=TRUE>>=
 # Do not show significance stars as they interfere with vignette generation
 options(show.signif.stars = FALSE)
-SFO.fit <- mkinfit(SFO, FOCUS_2006_C, lower = c(k_parent_sink = 0))
+SFO.fit <- mkinfit(SFO, FOCUS_2006_C)
 summary(SFO.fit)
-SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C, plot=TRUE, eigen=FALSE)
+SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C)
 summary(SFORB.fit)
-SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D, plot=TRUE)
-SFO_SFO.fit.ode <- mkinfit(SFO_SFO, FOCUS_2006_D, plot=TRUE, eigen=FALSE)
+SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
 summary(SFO_SFO.fit, data=FALSE)
-summary(SFO_SFO.fit.ode, data=FALSE)
-SFORB_SFO.fit <- mkinfit(SFORB_SFO, FOCUS_2006_D)
-summary(SFORB_SFO.fit)
 @
 
 \bibliographystyle{plainnat}

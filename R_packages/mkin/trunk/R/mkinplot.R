@@ -1,5 +1,6 @@
 mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$data$time), ylim = range(fit$data$observed, na.rm = TRUE), legend = TRUE, ...)
 {
+  fundamental = fit$fundamental
   fixed <- fit$fixed$value
   names(fixed) <- rownames(fit$fixed)
   parms.all <- c(fit$par, fixed)
@@ -16,12 +17,32 @@ mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$dat
     rownames(subset(fit$fixed, type == "deparm")))
   odeparms <- parms.all[odenames]
 
-  # Solve the ode
-  out <- ode(
-    y = odeini,
-    times = outtimes,
-    func = fit$mkindiff, 
-    parms = odeparms)
+  # Solve the system
+  if (fundamental) {
+    evalparse <- function(string)
+    {
+      eval(parse(text=string), as.list(odeparms))
+    }
+    coefmat.num <- matrix(sapply(as.vector(fit$coefmat), evalparse), 
+      nrow = length(odeini))
+    e <- eigen(coefmat.num)
+    c <- solve(e$vectors, odeini)
+    f.out <- function(t) {
+      e$vectors %*% diag(exp(e$values * t), nrow=length(odeini)) %*% c
+    }
+    o <- matrix(mapply(f.out, outtimes), 
+      nrow = length(odeini), ncol = length(outtimes))
+    dimnames(o) <- list(names(odeini), NULL)
+    out <- cbind(time = outtimes, t(o))
+  } else {
+    out <- ode(
+      y = odeini,
+      times = outtimes,
+      func = fit$mkindiff, 
+      parms = odeparms,
+      atol = fit$atol
+    )
+  }
     
   # Output transformation for models with unobserved compartments like SFORB
   out_transformed <- data.frame(time = out[,"time"])

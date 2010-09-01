@@ -101,16 +101,16 @@ mkinfit <- function(mkinmod, observed,
         eval(parse(text=string), as.list(odeparms))
       }
       coefmat.num <- matrix(sapply(as.vector(mkinmod$coefmat), evalparse), 
-        nrow = length(mod_vars), byrow=TRUE)
+        nrow = length(mod_vars))
       e <- eigen(coefmat.num)
       c <- solve(e$vectors, odeini)
-      outvals <- matrix(0, nrow=length(outtimes), ncol=length(mod_vars),
-        dimnames=list(outtimes, mod_vars))
-      for (i in 1:length(mod_vars)) {
-        outvals = outvals + 
-            t(outer(c[i] * e$vectors[,i], exp(e$values[i] * outtimes)))
+      f.out <- function(t) {
+        e$vectors %*% diag(exp(e$values * t), nrow=length(mod_vars)) %*% c
       }
-      out = cbind(time=outtimes, outvals)
+      o <- matrix(mapply(f.out, outtimes), 
+        nrow = length(mod_vars), ncol = length(outtimes))
+      dimnames(o) <- list(mod_vars, outtimes)
+      out <- cbind(time = outtimes, t(o))
     } else {
       out <- ode(
         y = odeini,
@@ -143,13 +143,10 @@ mkinfit <- function(mkinmod, observed,
       if(plot) {
         outtimes_plot = seq(min(observed$time), max(observed$time), length.out=100)
         if(fundamental) {
-          outvals_plot <- matrix(0, nrow=length(outtimes_plot), 
-            length(mod_vars), dimnames=list(outtimes_plot, mod_vars))
-          for (i in 1:length(mod_vars)) {
-            outvals_plot = outvals_plot + 
-              t(outer(c[i] * e$vectors[,i], exp(e$values[i] * outtimes_plot)))
-          }
-          out_plot = cbind(time=outtimes_plot, outvals_plot)
+          o_plot <- matrix(mapply(f.out, outtimes_plot), 
+            nrow = length(mod_vars), ncol = length(outtimes_plot))
+          dimnames(o_plot) <- list(mod_vars, outtimes_plot)
+          out_plot <- cbind(time = outtimes_plot, t(o_plot))
         } else {
           out_plot <- ode(
             y = odeini,
@@ -188,7 +185,7 @@ mkinfit <- function(mkinmod, observed,
 
   # We need to return some more data for summary and plotting
   if (fundamental) {
-    # fit$e <- e
+    fit$coefmat <- mkinmod$coefmat
   } else {
     fit$mkindiff <- mkindiff
   }
@@ -299,6 +296,8 @@ mkinfit <- function(mkinmod, observed,
   data$residual <- data$observed - data$predicted
   data$variable <- ordered(data$variable, levels = obs_vars)
   fit$data <- data[order(data$variable, data$time), ]
+  fit$fundamental <- fundamental
+  fit$atol <- atol
 
   class(fit) <- c("mkinfit", "modFit") 
   return(fit)
