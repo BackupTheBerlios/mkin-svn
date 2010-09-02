@@ -6,3 +6,4 @@
 - Version numbers and timestamp in output
 - Specify default range from 0 to 1 for formation fractions
 - Calculate confidence intervals for predictions (DT50 and DT90)
+- Provide analytical solution for SFORB model in SFORB.solution function

@@ -58,13 +58,19 @@ mkinfit <- function(mkinmod, observed,
       names(state.ini.optim) <- paste(names(state.ini.optim), "0", sep="_")
   }
 
-  # Decide if the solution will be based on spectral decomposition (fundamental
-  # system)
-  fundamental = ifelse(is.matrix(mkinmod$coefmat) & eigen, TRUE, FALSE)
+  # Decide if the solution of the model can be based on a simple analytical
+  # formula, the spectral decomposition of the matrix (fundamental system)
+  # or a numeric ode solver from the deSolve package
+  if (length(mkinmod$diffs) == 1) {
+    solution = "analytical"
+  } else {
+    if (is.matrix(mkinmod$coefmat) & eigen) solution = "eigen"
+    else solution = "deSolve"
+  }
 
   # Create a function calculating the differentials specified by the model
   # if necessary
-  if(!fundamental) {
+  if(solution == "deSolve") {
     mkindiff <- function(t, state, parms) {
       time <- t
       diffs <- vector()
@@ -93,13 +99,32 @@ mkinfit <- function(mkinmod, observed,
     odeparms <- c(P[(length(state.ini.optim) + 1):length(P)], parms.fixed)
 
     outtimes = unique(observed$time)
+    evalparse <- function(string)
+    {
+      eval(parse(text=string), as.list(c(odeparms, odeini)))
+    }
 
     # Solve the system
-    if (fundamental) {
-      evalparse <- function(string)
-      {
-        eval(parse(text=string), as.list(odeparms))
-      }
+    if (solution == "analytical") {
+      parent.type = names(mkinmod$map[[1]])[1]  
+      parent.name = names(mkinmod$diffs)[[1]]
+      o <- switch(parent.type,
+        SFO = SFO.solution(outtimes, 
+            evalparse(parent.name),
+            evalparse(paste("k", parent.name, "sink", sep="_"))),
+        FOMC = FOMC.solution(outtimes,
+            evalparse(parent.name),
+            evalparse("alpha"), evalparse("beta")),
+        SFORB = SFORB.solution(outtimes,
+            evalparse(parent.name),
+            evalparse(paste("k", parent.name, "free_bound", sep="_")),
+            evalparse(paste("k", parent.name, "bound_free", sep="_")),
+            evalparse(paste("k", parent.name, "free_sink", sep="_")))
+      )
+      out <- cbind(outtimes, o)
+      dimnames(out) <- list(outtimes, c("time", parent.name))
+    }
+    if (solution == "eigen") {
       coefmat.num <- matrix(sapply(as.vector(mkinmod$coefmat), evalparse), 
         nrow = length(mod_vars))
       e <- eigen(coefmat.num)
@@ -111,7 +136,9 @@ mkinfit <- function(mkinmod, observed,
         nrow = length(mod_vars), ncol = length(outtimes))
       dimnames(o) <- list(mod_vars, outtimes)
       out <- cbind(time = outtimes, t(o))
-    } else {
+    } 
+    if (solution == "deSolve")  
+    {
       out <- ode(
         y = odeini,
         times = outtimes,
@@ -142,12 +169,30 @@ mkinfit <- function(mkinmod, observed,
       # Plot the data and current model output if requested
       if(plot) {
         outtimes_plot = seq(min(observed$time), max(observed$time), length.out=100)
-        if(fundamental) {
+        if (solution == "analytical") {
+          o_plot <- switch(parent.type,
+            SFO = SFO.solution(outtimes_plot, 
+                evalparse(parent.name),
+                evalparse(paste("k", parent.name, "sink", sep="_"))),
+            FOMC = FOMC.solution(outtimes_plot,
+                evalparse(parent.name),
+                evalparse("alpha"), evalparse("beta")),
+            SFORB = SFORB.solution(outtimes_plot,
+                evalparse(parent.name),
+                evalparse(paste("k", parent.name, "free_bound", sep="_")),
+                evalparse(paste("k", parent.name, "bound_free", sep="_")),
+                evalparse(paste("k", parent.name, "free_sink", sep="_")))
+          )
+          out_plot <- cbind(outtimes_plot, o_plot)
+          dimnames(out_plot) <- list(outtimes_plot, c("time", parent.name))
+        }
+        if(solution == "fundamental") {
           o_plot <- matrix(mapply(f.out, outtimes_plot), 
             nrow = length(mod_vars), ncol = length(outtimes_plot))
           dimnames(o_plot) <- list(mod_vars, outtimes_plot)
           out_plot <- cbind(time = outtimes_plot, t(o_plot))
-        } else {
+        } 
+        if (solution == "deSolve") {
           out_plot <- ode(
             y = odeini,
             times = outtimes_plot,
@@ -184,9 +229,11 @@ mkinfit <- function(mkinmod, observed,
   fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = lower, upper = upper, ...)
 
   # We need to return some more data for summary and plotting
-  if (fundamental) {
+  fit$solution <- solution
+  if (solution == "fundamental") {
     fit$coefmat <- mkinmod$coefmat
-  } else {
+  } 
+  if (solution == "deSolve") {
     fit$mkindiff <- mkindiff
   }
 
@@ -296,7 +343,6 @@ mkinfit <- function(mkinmod, observed,
   data$residual <- data$observed - data$predicted
   data$variable <- ordered(data$variable, levels = obs_vars)
   fit$data <- data[order(data$variable, data$time), ]
-  fit$fundamental <- fundamental
   fit$atol <- atol
 
   class(fit) <- c("mkinfit", "modFit") 

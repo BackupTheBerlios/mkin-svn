@@ -1,6 +1,6 @@
 mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$data$time), ylim = range(fit$data$observed, na.rm = TRUE), legend = TRUE, ...)
 {
-  fundamental = fit$fundamental
+  solution = fit$solution
   fixed <- fit$fixed$value
   names(fixed) <- rownames(fit$fixed)
   parms.all <- c(fit$par, fixed)
@@ -18,11 +18,30 @@ mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$dat
   odeparms <- parms.all[odenames]
 
   # Solve the system
-  if (fundamental) {
-    evalparse <- function(string)
-    {
-      eval(parse(text=string), as.list(odeparms))
-    }
+  evalparse <- function(string)
+  {
+    eval(parse(text=string), as.list(c(odeparms, odeini)))
+  }
+  if (solution == "analytical") {
+    parent.type = names(fit$map[[1]])[1]  
+    parent.name = names(fit$diffs)[[1]]
+    o <- switch(parent.type,
+      SFO = SFO.solution(outtimes, 
+          evalparse(parent.name),
+          evalparse(paste("k", parent.name, "sink", sep="_"))),
+      FOMC = FOMC.solution(outtimes,
+          evalparse(parent.name),
+          evalparse("alpha"), evalparse("beta")),
+      SFORB = SFORB.solution(outtimes,
+          evalparse(parent.name),
+          evalparse(paste("k", parent.name, "free_bound", sep="_")),
+          evalparse(paste("k", parent.name, "bound_free", sep="_")),
+          evalparse(paste("k", parent.name, "free_sink", sep="_")))
+    )
+    out <- cbind(outtimes, o)
+    dimnames(out) <- list(outtimes, c("time", parent.name))
+  }
+  if (solution == "fundamental") {
     coefmat.num <- matrix(sapply(as.vector(fit$coefmat), evalparse), 
       nrow = length(odeini))
     e <- eigen(coefmat.num)
@@ -34,7 +53,8 @@ mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$dat
       nrow = length(odeini), ncol = length(outtimes))
     dimnames(o) <- list(names(odeini), NULL)
     out <- cbind(time = outtimes, t(o))
-  } else {
+  } 
+  if (solution == "deSolve") {
     out <- ode(
       y = odeini,
       times = outtimes,
