@@ -61,7 +61,7 @@ mkinfit <- function(mkinmod, observed,
   # Decide if the solution of the model can be based on a simple analytical
   # formula, the spectral decomposition of the matrix (fundamental system)
   # or a numeric ode solver from the deSolve package
-  if (length(mkinmod$diffs) == 1) {
+  if (length(mkinmod$map) == 1) {
     solution = "analytical"
   } else {
     if (is.matrix(mkinmod$coefmat) & eigen) solution = "eigen"
@@ -117,12 +117,12 @@ mkinfit <- function(mkinmod, observed,
             evalparse("alpha"), evalparse("beta")),
         SFORB = SFORB.solution(outtimes,
             evalparse(parent.name),
-            evalparse(paste("k", parent.name, "free_bound", sep="_")),
-            evalparse(paste("k", parent.name, "bound_free", sep="_")),
-            evalparse(paste("k", parent.name, "free_sink", sep="_")))
+            evalparse(paste("k", parent.name, "bound", sep="_")),
+            evalparse(paste("k", sub("free", "bound", parent.name), "free", sep="_")),
+            evalparse(paste("k", parent.name, "sink", sep="_")))
       )
       out <- cbind(outtimes, o)
-      dimnames(out) <- list(outtimes, c("time", parent.name))
+      dimnames(out) <- list(outtimes, c("time", sub("_free", "", parent.name)))
     }
     if (solution == "eigen") {
       coefmat.num <- matrix(sapply(as.vector(mkinmod$coefmat), evalparse), 
@@ -151,7 +151,7 @@ mkinfit <- function(mkinmod, observed,
     # Output transformation for models with unobserved compartments like SFORB
     out_transformed <- data.frame(time = out[,"time"])
     for (var in names(mkinmod$map)) {
-      if(length(mkinmod$map[[var]]) == 1) {
+      if((length(mkinmod$map[[var]]) == 1) || solution == "analytical") {
         out_transformed[var] <- out[, var]
       } else {
         out_transformed[var] <- rowSums(out[, mkinmod$map[[var]]])
@@ -179,14 +179,14 @@ mkinfit <- function(mkinmod, observed,
                 evalparse("alpha"), evalparse("beta")),
             SFORB = SFORB.solution(outtimes_plot,
                 evalparse(parent.name),
-                evalparse(paste("k", parent.name, "free_bound", sep="_")),
-                evalparse(paste("k", parent.name, "bound_free", sep="_")),
-                evalparse(paste("k", parent.name, "free_sink", sep="_")))
+                evalparse(paste("k", parent.name, "bound", sep="_")),
+                evalparse(paste("k", sub("free", "bound", parent.name), "free", sep="_")),
+                evalparse(paste("k", parent.name, "sink", sep="_")))
           )
           out_plot <- cbind(outtimes_plot, o_plot)
-          dimnames(out_plot) <- list(outtimes_plot, c("time", parent.name))
+          dimnames(out_plot) <- list(outtimes_plot, c("time", sub("_free", "", parent.name)))
         }
-        if(solution == "fundamental") {
+        if(solution == "eigen") {
           o_plot <- matrix(mapply(f.out, outtimes_plot), 
             nrow = length(mod_vars), ncol = length(outtimes_plot))
           dimnames(o_plot) <- list(mod_vars, outtimes_plot)
@@ -201,7 +201,7 @@ mkinfit <- function(mkinmod, observed,
         }
         out_transformed_plot <- data.frame(time = out_plot[,"time"])
         for (var in names(mkinmod$map)) {
-          if(length(mkinmod$map[[var]]) == 1) {
+          if((length(mkinmod$map[[var]]) == 1) || solution == "analytical") {
             out_transformed_plot[var] <- out_plot[, var]
           } else {
             out_transformed_plot[var] <- rowSums(out_plot[, mkinmod$map[[var]]])
@@ -230,7 +230,7 @@ mkinfit <- function(mkinmod, observed,
 
   # We need to return some more data for summary and plotting
   fit$solution <- solution
-  if (solution == "fundamental") {
+  if (solution == "eigen") {
     fit$coefmat <- mkinmod$coefmat
   } 
   if (solution == "deSolve") {

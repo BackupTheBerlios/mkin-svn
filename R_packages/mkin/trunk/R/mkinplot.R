@@ -41,7 +41,7 @@ mkinplot <- function(fit, xlab = "Time", ylab = "Observed", xlim = range(fit$dat
     out <- cbind(outtimes, o)
     dimnames(out) <- list(outtimes, c("time", parent.name))
   }
-  if (solution == "fundamental") {
+  if (solution == "eigen") {
     coefmat.num <- matrix(sapply(as.vector(fit$coefmat), evalparse), 
       nrow = length(odeini))
     e <- eigen(coefmat.num)

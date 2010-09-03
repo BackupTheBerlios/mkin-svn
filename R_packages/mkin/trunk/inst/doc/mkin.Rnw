@@ -129,7 +129,8 @@ differential equations. In these cases, a coefficient matrix is also returned.
 
 Other models that include time on the right-hand side of the differential 
 equation are the first-order multi-compartment (FOMC) model and the
-Hockey-Stick (HS) model. These can only be used for the parent compound.
+Hockey-Stick (HS) model. At present, only the FOMC model can only be used, and
+only for the parent compound.
 
 \subsection{Fitting the model}
 
@@ -148,8 +149,10 @@ SFO.fit <- mkinfit(SFO, FOCUS_2006_C)
 summary(SFO.fit)
 SFORB.fit <- mkinfit(SFORB, FOCUS_2006_C)
 summary(SFORB.fit)
-SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D)
+SFO_SFO.fit <- mkinfit(SFO_SFO, FOCUS_2006_D, plot=TRUE)
 summary(SFO_SFO.fit, data=FALSE)
+SFORB_SFO.fit <- mkinfit(SFORB_SFO, FOCUS_2006_D, plot=TRUE)
+summary(SFORB_SFO.fit, data=FALSE)
 @
 
 \bibliographystyle{plainnat}

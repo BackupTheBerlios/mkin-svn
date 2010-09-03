@@ -29,7 +29,7 @@ test.mkinmod.schaefer07_complex_example <- function()
   
   fit <- mkinfit(schaefer07_complex_model, 
     mkin_wide_to_long(schaefer07_complex_case, time = "time"),
-    parms.ini = c(0.1, 0.1, 0.1, 0.01, 0.1, 0.1, 0.1, 0.1), plot=TRUE)
+    parms.ini = c(0.1, 0.1, 0.1, 0.01, 0.1, 0.1, 0.1, 0.1))
   s <- summary(fit)
   attach(as.list(fit$par))
   k_parent <- sum(k_parent_A1, k_parent_B1, k_parent_C1)
