@@ -4,5 +4,5 @@
 - Export cost function together with mkinfit object, in order to make MCMC runs
   with the same cost function possible
 - Version numbers and timestamp in output
-- Specify default range from 0 to 1 for formation fractions
+- Integrate guessing of sensible starting parameters
 - Calculate confidence intervals for predictions (DT50 and DT90)
