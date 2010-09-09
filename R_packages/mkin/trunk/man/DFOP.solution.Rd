@@ -1,17 +1,24 @@
-\name{SFO.solution}
+\name{DFOP.solution}
 \Rdversion{1.1}
-\alias{SFO.solution}
-\title{ Single First-Order kinetics }
+\alias{DFOP.solution}
+\title{
+Dual First-Order in Parallel kinetics
+}
 \description{
-  Function describing exponential decline from a defined starting value.
+  Function describing decline from a defined starting value using the sum
+  of two exponential decline functions.
 }
 \usage{
-  SFO.solution(t, parent.0, k)
+DFOP.solution(t, parent.0, k1, k2, g)
 }
 \arguments{
   \item{t}{ Time. }
   \item{parent.0}{ Starting value for the response variable at time zero. }
-  \item{k}{ Kinetic constant. }
+  \item{k1}{ First kinetic constant. }
+  \item{k2}{ Second kinetic constant. }
+  \item{g}{ Fraction of the starting value declining according to the
+    first kinetic constant.
+  }
 }
 \value{
   The value of the response variable at time \code{t}.
@@ -24,6 +31,6 @@
   \url{http://focus.jrc.ec.europa.eu/dk} 
 }
 \examples{
-  \dontrun{plot(function(x) SFO.solution(x, 100, 3), 0, 2)}
+  \dontrun{plot(function(x) DFOP.solution(x, 100, 5, 0.5, 0.3), 0, 4, ylim=c(0,100))}
 }
 \keyword{ manip }

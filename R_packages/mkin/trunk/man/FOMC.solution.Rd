@@ -43,7 +43,6 @@ FOMC.solution(t, parent.0, alpha, beta)
   new model based on spatial variability. \emph{Environmental Science and 
   Technology} \bold{24}, 1032-1038
 }
-\author{ Johannes Ranke }
 \examples{
   \dontrun{plot(function(x) FOMC.solution(x, 100, 10, 2), 0, 2)}
 }

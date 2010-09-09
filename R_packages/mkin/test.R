@@ -5,15 +5,21 @@
 # unit tests under inst/unitTests
 
 library(mkin)
+source("trunk/R/DFOP.solution.R")
+source("trunk/R/HS.solution.R")
 source("trunk/R/mkinmod.R")
 source("trunk/R/mkinfit.R")
 SFO <- mkinmod(parent = list(type = "SFO"))
 FOMC <- mkinmod(parent = list(type = "FOMC"))
 SFORB <- mkinmod(parent = list(type = "SFORB"))
+DFOP <- mkinmod(parent = list(type = "DFOP"))
+HS <- mkinmod(parent = list(type = "HS"))
 
 SFO_SFO <- mkinmod(parent = list(type = "SFO", to = "m1", sink = TRUE),
         m1 = list(type = "SFO", to = NULL, sink = TRUE))
 FOMC_SFO <- mkinmod(parent = list(type="FOMC", to = "m1"), m1 = list(type="SFO"))
+DFOP_SFO <- mkinmod(parent = list(type="DFOP", to = "m1"), m1 = list(type="SFO"))
+HS_SFO <- mkinmod(parent = list(type="HS", to = "m1"), m1 = list(type="SFO"))
 SFORB_SFO <- mkinmod(parent = list(type="SFORB", to = "m1"), m1 = list(type="SFO"))
 ws <- mkinmod(water = list(type = "SFO", to = "sediment", sink = TRUE),
   sediment = list(type = "SFO"))
@@ -29,14 +35,32 @@ summary(fit <- mkinfit(SFORB, FOCUS_2006_C, eigen=FALSE))
 summary(fit)
 
 
-source("R/mkinfit.R")
+source("trunk/R/mkinfit.R")
+source("trunk/R/mkinmod.R")
+source("trunk/R/mkinplot.R")
 summary(fit <- mkinfit(SFO, FOCUS_2006_C))
 summary(fit <- mkinfit(FOMC, FOCUS_2006_C))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_A, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_B, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_C, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_D, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(HS, FOCUS_2006_C, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
+summary(fit <- mkinfit(HS, FOCUS_2006_D, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
 summary(fit <- mkinfit(SFORB, FOCUS_2006_C))
 summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_D))
 summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_D, fixed_parms = "k_parent_sink"))
 summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_E))
-summary(fit <- mkinfit(FOMC_SFO, FOCUS_2006_D))
+summary(fit <- mkinfit(SFO_SFO, FOCUS_2006_E, eigen=FALSE))
+summary(fit <- mkinfit(FOMC_SFO, FOCUS_2006_D, plot=TRUE))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_D, parms.ini = c(0.7, 0.09, 0.1)))
+summary(fit <- mkinfit(DFOP_SFO, FOCUS_2006_D, parms.ini = c(0.7, 0.09, 0.1, 0.1, 0.5), plot=TRUE))
+summary(fit <- mkinfit(HS, FOCUS_2006_A, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
+summary(fit <- mkinfit(HS, FOCUS_2006_B, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
+summary(fit <- mkinfit(HS, FOCUS_2006_C, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
+summary(fit <- mkinfit(SFO, FOCUS_2006_D, plot=TRUE))
+summary(fit <- mkinfit(HS, FOCUS_2006_D, parms.ini = c(0.1, 0.01, 10), plot=TRUE))
+summary(fit <- mkinfit(HS_SFO, FOCUS_2006_D, parms.ini = c(0.09, 0.11, 14, 0.1, 0.5), 
+  plot=TRUE))
 summary(fit <- mkinfit(SFORB_SFO, FOCUS_2006_D))
 summary(fit <- mkinfit(ws, FOCUS_2006_F, plot = TRUE))
 summary(fit <- mkinfit(ws_back, FOCUS_2006_F, lower = 0, 
@@ -48,6 +72,7 @@ plot(residual ~ time, data = fit$data, subset = variable == "water")
 plot(residual ~ time, data = fit$data, subset = variable == "sediment")
 
 
+# Debug the SFO model
 mkinmod <- SFO
 observed <- FOCUS_2006_A
 parms.ini <- rep(0.1, 1)
@@ -67,6 +92,31 @@ P <- c(state.ini.optim, parms.optim)
 modCost(cost, P)
 fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = 0)
 MCMC <- modMCMC(cost, c(state.ini.optim, parms.optim))
+
+# Debug the DFOP model
+source("trunk/R/mkinmod.R")
+DFOP <- mkinmod(parent = list(type = "DFOP"))
+mkinmod <- DFOP
+observed <- FOCUS_2006_C
+parms.ini <- c(0.45, 0.02, 0.85)
+state.ini <- c(100)
+lower = 0
+upper = Inf
+fixed_parms <- NULL
+fixed_initials <- character(0)
+plot = FALSE
+quiet = FALSE
+err = NULL
+weight = "none"
+scaleVar = FALSE
+atol = 1e-6
+
+P <- c(state.ini.optim, parms.optim)
+summary(fit <- mkinfit(DFOP, FOCUS_2006_A, plot=TRUE, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_B, plot=TRUE, parms.ini = c(0.1, 0.01, 0.5)))
+summary(fit <- mkinfit(DFOP, FOCUS_2006_C, plot=TRUE, parms.ini = c(0.1, 0.01, 0.5)))
+
+summary(fit <- mkinfit(SFORB_SFO, FOCUS_2006_D))
 
 d <- FOCUS_2006_C
 d2 <- FOCUS_2006_C

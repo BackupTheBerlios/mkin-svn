@@ -30,7 +30,6 @@
   EC Document Reference Sanco/10058/2005 version 2.0, 434 pp,
   \url{http://focus.jrc.ec.europa.eu/dk} 
 }
-\author{ Johannes Ranke }
 \examples{
   \dontrun{plot(function(x) SFORB.solution(x, 100, 0.5, 2, 3), 0, 2)}
 }

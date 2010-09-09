@@ -3,7 +3,7 @@ Type: Package
 Title: Routines for fitting kinetic models with one or more state
   variables to chemical degradation data
 Version: 0.8-01
-Date: 2010-09-03
+Date: 2010-09-09
 Author: Johannes Ranke
 Maintainer: Johannes Ranke <jranke@users.berlios.de>
 Description: Calculation routines based on the FOCUS Kinetics Report (2006).

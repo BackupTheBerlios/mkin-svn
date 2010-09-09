@@ -30,7 +30,7 @@ mkinmod <- function(...)
   parms <- vector()
   diffs <- vector()
   map <- list()
-  if(spec[[1]]$type == "FOMC") {
+  if(spec[[1]]$type %in% c("FOMC", "DFOP", "HS")) {
     mat = FALSE 
   } else mat = TRUE
 
@@ -39,14 +39,16 @@ mkinmod <- function(...)
   {
     if(is.null(spec[[varname]]$type)) stop(
       "Every argument to mkinmod must be a list containing a type component")
-    if(!spec[[varname]]$type %in% c("SFO", "FOMC", "SFORB")) stop(
-      "Available types are SFO, FOMC and SFORB only")
+    if(!spec[[varname]]$type %in% c("SFO", "FOMC", "DFOP", "HS", "SFORB")) stop(
+      "Available types are SFO, FOMC, DFOP, HS and SFORB only")
     new_parms <- vector()
 
     # New (sub)compartments (boxes) needed for the model type
     new_boxes <- switch(spec[[varname]]$type,
       SFO = varname,
       FOMC = varname,
+      DFOP = varname,
+      HS = varname,
       SFORB = paste(varname, c("free", "bound"), sep="_")
     )
     map[[varname]] <- new_boxes
@@ -61,15 +63,45 @@ mkinmod <- function(...)
     # Construct and add FOMC term and add FOMC parameters if needed
     if(spec[[varname]]$type == "FOMC") {
       if(match(varname, obs_vars) != 1) {
-        stop("Type FOMC is only allowed for the first compartment, which is assumed to be the source compartment")
+        stop("Type FOMC is only possible for the first compartment, which is assumed to be the source compartment")
       }
       if(spec[[varname]]$sink == FALSE) {
         stop("Turning off the sink for the FOMC model is not implemented")
       }
       # From p. 53 of the FOCUS kinetics report
-      fomc_term <- paste("(alpha/beta) * ((time/beta) + 1)^-1 *", new_boxes[[1]])
-      new_diffs[[1]] <- paste(new_diffs[[1]], "-", fomc_term)
+      nonlinear_term <- paste("(alpha/beta) * ((time/beta) + 1)^-1 *", new_boxes[[1]])
+      new_diffs[[1]] <- paste(new_diffs[[1]], "-", nonlinear_term)
       new_parms <- c("alpha", "beta")
+      ff <- vector()
+    } 
+
+    # Construct and add DFOP term and add DFOP parameters if needed
+    if(spec[[varname]]$type == "DFOP") {
+      if(match(varname, obs_vars) != 1) {
+        stop("Type DFOP is only possible for the first compartment, which is assumed to be the source compartment")
+      }
+      if(spec[[varname]]$sink == FALSE) {
+        stop("Turning off the sink for the DFOP model is not implemented")
+      }
+      # From p. 57 of the FOCUS kinetics report
+      nonlinear_term <- paste("((k1 * g * exp(-k1 * time) + k2 * (1 - g) * exp(-k2 * time)) / (g * exp(-k1 * time) + (1 - g) * exp(-k2 * time))) *", new_boxes[[1]])
+      new_diffs[[1]] <- paste(new_diffs[[1]], "-", nonlinear_term)
+      new_parms <- c("k1", "k2", "g")
+      ff <- vector()
+    } 
+
+    # Construct and add HS term and add HS parameters if needed
+    if(spec[[varname]]$type == "HS") {
+      if(match(varname, obs_vars) != 1) {
+        stop("Type HS is only possible for the first compartment, which is assumed to be the source compartment")
+      }
+      if(spec[[varname]]$sink == FALSE) {
+        stop("Turning off the sink for the HS model is not implemented")
+      }
+      # From p. 55 of the FOCUS kinetics report
+      nonlinear_term <- paste("ifelse(time <= tb, k1, k2)", "*", new_boxes[[1]])
+      new_diffs[[1]] <- paste(new_diffs[[1]], "-", nonlinear_term)
+      new_parms <- c("k1", "k2", "tb")
       ff <- vector()
     } 
 
@@ -108,6 +140,8 @@ mkinmod <- function(...)
       origin_box <- switch(spec[[varname]]$type,
         SFO = varname,
         FOMC = varname,
+        DFOP = varname,
+        HS = varname,
         SFORB = paste(varname, "free", sep="_"))
       fraction_left <- NULL
       for (target in to) {
@@ -122,7 +156,7 @@ mkinmod <- function(...)
             k_from_to, "*", origin_box)
           parms <- c(parms, k_from_to)
         }
-        if(spec[[varname]]$type == "FOMC") {
+        if(spec[[varname]]$type %in% c("FOMC", "DFOP", "HS")) {
           fraction_to_target = paste("f_to", target, sep="_")
           fraction_not_to_target = paste("(1 - ", fraction_to_target, ")", 
             sep="")
@@ -137,7 +171,7 @@ mkinmod <- function(...)
           }
           ff[target_box] = fraction_really_to_target
           diffs[[target_box]] <- paste(diffs[[target_box]], "+", 
-            ff[target_box], "*", fomc_term)
+            ff[target_box], "*", nonlinear_term)
           parms <- c(parms, fraction_to_target)
         }
       }

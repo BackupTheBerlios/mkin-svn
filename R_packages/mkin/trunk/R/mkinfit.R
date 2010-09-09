@@ -115,6 +115,14 @@ mkinfit <- function(mkinmod, observed,
         FOMC = FOMC.solution(outtimes,
             evalparse(parent.name),
             evalparse("alpha"), evalparse("beta")),
+        DFOP = DFOP.solution(outtimes,
+            evalparse(parent.name),
+            evalparse("k1"), evalparse("k2"),
+            evalparse("g")),
+        HS = HS.solution(outtimes,
+            evalparse(parent.name),
+            evalparse("k1"), evalparse("k2"),
+            evalparse("tb")),
         SFORB = SFORB.solution(outtimes,
             evalparse(parent.name),
             evalparse(paste("k", parent.name, "bound", sep="_")),
@@ -177,6 +185,14 @@ mkinfit <- function(mkinmod, observed,
             FOMC = FOMC.solution(outtimes_plot,
                 evalparse(parent.name),
                 evalparse("alpha"), evalparse("beta")),
+            DFOP = DFOP.solution(outtimes_plot,
+                evalparse(parent.name),
+                evalparse("k1"), evalparse("k2"),
+                evalparse("g")),
+            HS = HS.solution(outtimes_plot,
+                evalparse(parent.name),
+                evalparse("k1"), evalparse("k2"),
+                evalparse("tb")),
             SFORB = SFORB.solution(outtimes_plot,
                 evalparse(parent.name),
                 evalparse(paste("k", parent.name, "bound", sep="_")),
@@ -271,6 +287,10 @@ mkinfit <- function(mkinmod, observed,
     n.optim <- n.k.optim + n.initials.optim
     if ("alpha" %in% names(parms.optim)) n.optim <- n.optim + 1
     if ("beta" %in% names(parms.optim)) n.optim <- n.optim + 1
+    if ("k1" %in% names(parms.optim)) n.optim <- n.optim + 1
+    if ("k2" %in% names(parms.optim)) n.optim <- n.optim + 1
+    if ("g" %in% names(parms.optim)) n.optim <- n.optim + 1
+    if ("tb" %in% names(parms.optim)) n.optim <- n.optim + 1
     errmin.tmp <- mkinerrmin(errdata.var, n.optim)
     errmin[obs_var, c("err.min", "n.optim", "df")] <- errmin.tmp
   }
@@ -298,6 +318,37 @@ mkinfit <- function(mkinmod, observed,
       beta = parms.all["beta"]
       DT50 = beta * (2^(1/alpha) - 1)
       DT90 = beta * (10^(1/alpha) - 1)
+      ff_names = names(mkinmod$ff)
+      for (ff_name in ff_names)
+      {
+        fit$ff[[paste(obs_var, ff_name, sep="_")]] = 
+          eval(parse(text = mkinmod$ff[ff_name]), as.list(parms.all))
+      }
+      fit$ff[[paste(obs_var, "sink", sep="_")]] = 1 - sum(fit$ff)
+    }
+    if (type == "DFOP") {
+      k1 = parms.all["k1"]
+      k2 = parms.all["k2"]
+      g = parms.all["g"]
+      f <- function(t, x) {
+        ((g * exp( - k1 * t) + (1 - g) * exp( - k2 * t)) - (1 - x/100))^2
+      }
+    }
+    if (type == "HS") {
+      k1 = parms.all["k1"]
+      k2 = parms.all["k2"]
+      tb = parms.all["tb"]
+      f <- function(t, x) {
+	fraction = ifelse(t <= tb, exp(-k1 * t), exp(-k1 * tb) * exp(-k2 * (t - tb)))
+	(fraction - (1 - x/100))^2
+      }
+    }
+    if (type %in% c("DFOP", "HS")) {
+      DTmax <- 1000
+      DT50.o <- optimize(f, c(0.001, DTmax), x=50)$minimum
+      DT50 = ifelse(DTmax - DT50.o < 0.1, NA, DT50.o)
+      DT90.o <- optimize(f, c(0.001, DTmax), x=90)$minimum
+      DT90 = ifelse(DTmax - DT90.o < 0.1, NA, DT90.o)
       ff_names = names(mkinmod$ff)
       for (ff_name in ff_names)
       {

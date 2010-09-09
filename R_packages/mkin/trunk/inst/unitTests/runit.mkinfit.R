@@ -53,20 +53,3 @@ test.mkinmod.schaefer07_complex_example <- function()
   r$mkin.deviation <- abs(round(100 * ((r$mkin - r$means)/r$means), digits=1))
   checkIdentical(r$mkin.deviation < 10, rep(TRUE, length(r$mkin.deviation)))
 }
-test.mkinmod.FOMC_ffs <- function()
-{
-  schaefer07_FOMC_ffs <- mkinmod(
-    parent = list(type = "FOMC", to = c("A1", "B1", "C1"), sink = TRUE),
-    A1 = list(type = "SFO", to = "A2"),
-    B1 = list(type = "SFO"),
-    C1 = list(type = "SFO"),
-    A2 = list(type = "SFO"))
-  
-  fit <- mkinfit(schaefer07_FOMC_ffs,
-    mkin_wide_to_long(schaefer07_complex_case, time = "time"),
-    parms.ini = c(5, 85, 0.1, 0.1, 0.01, 0.1, 0.1, 0.1, 0.1, 0.1), 
-    atol = 1e-5,
-    plot=TRUE)
-  s <- summary(fit)
-  s
-}

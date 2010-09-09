@@ -61,7 +61,7 @@ Passed to \code{\link{summary.modFit}}.  }
   \url{http://focus.jrc.ec.europa.eu/dk} 
 }
 \author{
-  Johannes Ranke <jranke@harlan.com>
+  Johannes Ranke <jranke@{harlan.com,uni-bremen.de}>
 }
 \examples{
   summary(mkinfit(mkinmod(parent = list(type = "SFO")), FOCUS_2006_A))
