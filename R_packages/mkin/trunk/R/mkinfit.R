@@ -318,37 +318,37 @@ mkinfit <- function(mkinmod, observed,
       beta = parms.all["beta"]
       DT50 = beta * (2^(1/alpha) - 1)
       DT90 = beta * (10^(1/alpha) - 1)
-      ff_names = names(mkinmod$ff)
-      for (ff_name in ff_names)
-      {
-        fit$ff[[paste(obs_var, ff_name, sep="_")]] = 
-          eval(parse(text = mkinmod$ff[ff_name]), as.list(parms.all))
-      }
-      fit$ff[[paste(obs_var, "sink", sep="_")]] = 1 - sum(fit$ff)
     }
     if (type == "DFOP") {
       k1 = parms.all["k1"]
       k2 = parms.all["k2"]
       g = parms.all["g"]
       f <- function(t, x) {
-        ((g * exp( - k1 * t) + (1 - g) * exp( - k2 * t)) - (1 - x/100))^2
+        fraction <- g * exp( - k1 * t) + (1 - g) * exp( - k2 * t)
+        (fraction - (1 - x/100))^2
       }
-    }
-    if (type == "HS") {
-      k1 = parms.all["k1"]
-      k2 = parms.all["k2"]
-      tb = parms.all["tb"]
-      f <- function(t, x) {
-	fraction = ifelse(t <= tb, exp(-k1 * t), exp(-k1 * tb) * exp(-k2 * (t - tb)))
-	(fraction - (1 - x/100))^2
-      }
-    }
-    if (type %in% c("DFOP", "HS")) {
       DTmax <- 1000
       DT50.o <- optimize(f, c(0.001, DTmax), x=50)$minimum
       DT50 = ifelse(DTmax - DT50.o < 0.1, NA, DT50.o)
       DT90.o <- optimize(f, c(0.001, DTmax), x=90)$minimum
       DT90 = ifelse(DTmax - DT90.o < 0.1, NA, DT90.o)
+    }
+    if (type == "HS") {
+      k1 = parms.all["k1"]
+      k2 = parms.all["k2"]
+      tb = parms.all["tb"]
+      DTx <- function(x) {
+        DTx.a <- (log(100/(100 - x)))/k1
+        DTx.b <- tb + (log(100/(100 - x)) - k1 * tb)/k2
+        if (DTx.a < tb) DTx <- DTx.a
+        else DTx <- DTx.b
+        return(DTx)
+      }
+      DT50 <- DTx(50)
+      DT90 <- DTx(90)
+    }
+    # Back-calculation of formation fractions in case of nonlinear parent kinetics
+    if (type %in% c("FOMC", "DFOP", "HS")) {
       ff_names = names(mkinmod$ff)
       for (ff_name in ff_names)
       {

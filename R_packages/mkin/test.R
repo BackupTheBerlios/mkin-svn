@@ -5,8 +5,6 @@
 # unit tests under inst/unitTests
 
 library(mkin)
-source("trunk/R/DFOP.solution.R")
-source("trunk/R/HS.solution.R")
 source("trunk/R/mkinmod.R")
 source("trunk/R/mkinfit.R")
 SFO <- mkinmod(parent = list(type = "SFO"))

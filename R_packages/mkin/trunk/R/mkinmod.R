@@ -32,6 +32,12 @@ mkinmod <- function(...)
   map <- list()
   if(spec[[1]]$type %in% c("FOMC", "DFOP", "HS")) {
     mat = FALSE 
+    if(!is.null(spec[[1]]$to)) {
+      message <- paste("Only constant formation fractions over time are implemented.",
+        "Depending on the reason for the time dependence of degradation, this may be unrealistic",
+        sep="\n")
+      warning(message)
+    } else message <- "ok"
   } else mat = TRUE
 
   # Establish list of differential equations
