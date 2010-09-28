@@ -1,0 +1,9 @@
+require(gWidgetsWWW)
+localServerStart("simple.R")
+
+localServerStart("Examples/ex-clt.R", package="gWidgetsWWW")
+localServerStart("Examples/ex-form.R", package="gWidgetsWWW")
+localServerStart("Examples/ex-actions.R", package="gWidgetsWWW")
+localServerStart("Examples/ex-gtable.R", package="gWidgetsWWW")
+localServerStart("Examples/ex-layouts.R", package="gWidgetsWWW")
+localServerStart("Examples/ex-widgets.R", package="gWidgetsWWW")
