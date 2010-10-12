@@ -48,7 +48,12 @@ visible(pr) <- TRUE
 
 # Dataset definition
 ds <- gexpandgroup("Datasets", cont=w)
-visible(ds) <- FALSE
+s <- gdf(data.frame( Author = c("Meier"), Year = "3", Title = "4"),
+  name = "Studies",
+cont=ds)
+
+size(s) <- c(800,200)
+visible(ds) <- TRUE
 
 # Model definition
 ms <- gexpandgroup("Models", cont=w)

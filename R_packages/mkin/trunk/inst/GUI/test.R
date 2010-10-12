@@ -1,6 +1,9 @@
 require(gWidgetsWWW)
 localServerStart("simple.R")
 
+localServerStart("gdf-test.R")
+localServerStart("gdf-test-john.R")
+
 localServerStart("Examples/ex-actions.R", package="gWidgetsWWW")
 localServerStart("Examples/ex-add-widget-dynamically.R", package="gWidgetsWWW")
 localServerStart("Examples/ex-clt.R", package="gWidgetsWWW")
