@@ -35,14 +35,18 @@ prl[1,2] <- (n.observed.gw = gcombobox(
   1:max.n.observed, 
   handler = function(h, ...) {
     n.observed <- svalue(n.observed.gw)
+    filter.expression <- ifelse(n.observed < 10,
+      paste("^[1-", n.observed, "]$", sep=""),
+      paste("^[ 1][0-", n.observed, "]$", sep=""))
+    observed.gw$filter("Index", filter.expression)
   },
   cont=prl))
 
 observed.gw <- gdf(
-  items = data.frame(Index = 1:max.n.observed, Name = observed.names, stringsAsFactors=FALSE),
+  items = data.frame(Index = 1:max.n.observed, 
+    Name = observed.names, stringsAsFactors=FALSE),
   name = "Names of observed variables",
   width = 500, height=500, cont=prg)
-visible(observed.gw) <- FALSE
 
 visible(pr) <- TRUE
 
