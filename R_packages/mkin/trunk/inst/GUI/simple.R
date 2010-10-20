@@ -46,6 +46,13 @@ observed.gw <- gdf(
   name = "Names of observed variables",
   width = 500, height=250, cont=prg)
 
+addSpring(prg)
+addSpace(prg, 15)
+pr.ok <- gbutton("ok", 
+  handler=function(h,...) {
+      galert(getwd())
+    }, container=prg)
+
 visible(pr) <- TRUE
 
 # Dataset definition
@@ -64,4 +71,6 @@ visible(ms) <- FALSE
 # Evaluation window
 mw <- gframe("Evaluations", cont=w)
 
+# Status bar
+gstatusbar("Powered by gWidgetsWWW", cont = w)
 visible(w) <- TRUE 
