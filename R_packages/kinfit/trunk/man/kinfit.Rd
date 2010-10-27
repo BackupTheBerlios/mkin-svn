@@ -14,7 +14,7 @@ kinfit(kindata, kinmodels = c("SFO"), parent.0.user = NA,
   start.FOMC = list(parent.0 = NA, alpha = NA, beta = NA), 
   start.DFOP = list(parent.0 = NA, k1 = NA, k2 = NA, g = NA),
   start.HS = list(parent.0 = NA, k1 = NA, k2 = NA, tb = NA),
-  algorithm = "port")
+  algorithm = "default")
 }
 \arguments{
   \item{kindata}{
