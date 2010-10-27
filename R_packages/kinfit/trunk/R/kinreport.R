@@ -38,12 +38,18 @@ kinreport <- function(kinobject, file = NA, vcov = FALSE, endpoint.digits = 1)
                 m <- kinobject$fits[[kinmodel]]
                 if (!(class(m) == "try-error")) {
                     cat("\n\n---\n")
-                    cat("Nonlinear least squares fit of the", kinmodel, "model\n\n")
+                    cat("Nonlinear least squares fit of the", kinmodel, "model\n")
+                    if(m$parent.0.fixed) cat("Initial value fixed to", m$parent.0.user, "\n")
+                    cat("\n")
                     cat("Parameter estimation:\t")
                     s <- summary(m)
                     df <- s$df[2]
                     p <- 1 - pt(s$parameters[,3], df = df)
-                    parms <- cbind(s$parameters[,c(1,2,3)], "Pr(>t)" = p)
+                    parms <- matrix(nrow = nrow(s$parameters), ncol=4)
+                    dimnames(parms) = list(rownames(s$parameters), 
+                      c("Estimate", "Std. Error", "t value", "Pr(>t)"))
+                    parms[, c(1,2,3)] <- s$parameters[,c(1,2,3)]
+                    parms[, 4] <- p
                     cat("\n")
                     print(parms, digits=3)
                     cat("\n")

@@ -42,40 +42,50 @@ kinplot <- function(kinobject,
 	{
 		m = kinfits[[kinmodel]]
 		if(class(m) == "nls") {
-			switch(kinmodel,
-				SFO = curve(SFO(x, 
-					coef(m)[["parent.0"]], 
-					coef(m)[["k"]]),
-					from = min(kindata$t), to = max(kindata$t), add=TRUE,
-					col = colors[[kinmodel]],
-					lty = ltys[[kinmodel]]),
-				FOMC = curve(FOMC(x, 
-					coef(m)[["parent.0"]],
-					coef(m)[["alpha"]],
-					coef(m)[["beta"]]),
-					from = min(kindata$t), to = max(kindata$t), add=TRUE,
-					col = colors[[kinmodel]],
-					lty = ltys[[kinmodel]]),
-				HS = curve(HS(x, 
-					coef(m)[["parent.0"]], 
-					coef(m)[["k1"]],
-					coef(m)[["k2"]],
-					coef(m)[["tb"]]),
-					from = min(kindata$t), to = max(kindata$t), add=TRUE,
-					col = colors[[kinmodel]],
-					lty = ltys[[kinmodel]]),
-				DFOP = curve(DFOP(x, 
-					coef(m)[["parent.0"]], 
-					coef(m)[["k1"]],
-					coef(m)[["k2"]],
-					coef(m)[["g"]]),
-					from = min(kindata$t), to = max(kindata$t), add=TRUE,
-					col = colors[[kinmodel]],
-					lty = ltys[[kinmodel]]))
-                        ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
+      if (m$parent.0.fixed) {
+        switch(kinmodel,
+          SFO = curve(SFO(x, 
+            m$parent.0.user,
+            coef(m)[["k"]]),
+            from = min(kindata$t), to = max(kindata$t), add=TRUE,
+            col = colors[[kinmodel]],
+            lty = ltys[[kinmodel]]))
+      } else {
+        switch(kinmodel,
+          SFO = curve(SFO(x, 
+            coef(m)[["parent.0"]], 
+            coef(m)[["k"]]),
+            from = min(kindata$t), to = max(kindata$t), add=TRUE,
+            col = colors[[kinmodel]],
+            lty = ltys[[kinmodel]]),
+          FOMC = curve(FOMC(x, 
+            coef(m)[["parent.0"]],
+            coef(m)[["alpha"]],
+            coef(m)[["beta"]]),
+            from = min(kindata$t), to = max(kindata$t), add=TRUE,
+            col = colors[[kinmodel]],
+            lty = ltys[[kinmodel]]),
+          HS = curve(HS(x, 
+            coef(m)[["parent.0"]], 
+            coef(m)[["k1"]],
+            coef(m)[["k2"]],
+            coef(m)[["tb"]]),
+            from = min(kindata$t), to = max(kindata$t), add=TRUE,
+            col = colors[[kinmodel]],
+            lty = ltys[[kinmodel]]),
+          DFOP = curve(DFOP(x, 
+            coef(m)[["parent.0"]], 
+            coef(m)[["k1"]],
+            coef(m)[["k2"]],
+            coef(m)[["g"]]),
+            from = min(kindata$t), to = max(kindata$t), add=TRUE,
+            col = colors[[kinmodel]],
+            lty = ltys[[kinmodel]]))
+            ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
+      }
 		} else {
-                        ltext <- c(ltext, paste(kinmodel, "model failed"))
-                        ltys[[kinmodel]] <- NA
+            ltext <- c(ltext, paste(kinmodel, "model failed"))
+            ltys[[kinmodel]] <- NA
 		} 
 	}
 	legend(lpos, bty="n", inset = 0.05, 

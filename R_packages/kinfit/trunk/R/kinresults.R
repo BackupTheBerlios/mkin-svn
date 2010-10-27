@@ -33,31 +33,36 @@ kinresults <- function(kinfits, alpha = 0.05, SFORB=TRUE)
 		m = kinfits[[kinmodel]]
 		if(class(m) == "nls") {
 			kindata.means$est <- predict(m, kindata.means)
-			parms[[kinmodel]] <- switch(kinmodel,
-				SFO = list(parent.0 = coef(m)[["parent.0"]], 
-                                    k = coef(m)[["k"]]),
-				FOMC = list(parent.0 = coef(m)[["parent.0"]],
-                                    alpha = coef(m)[["alpha"]],
-				    beta = coef(m)[["beta"]]),
-				HS = list(parent.0 = coef(m)[["parent.0"]], 
-                                    k1 = coef(m)[["k1"]],
-				    k2 = coef(m)[["k2"]], 
-                                    tb = coef(m)[["tb"]]),
-				DFOP = list(parent.0 = coef(m)[["parent.0"]],
-                                    k1 = coef(m)[["k1"]],
-				    k2 = coef(m)[["k2"]], 
-                                    g = coef(m)[["g"]]))
-			if(kinmodel == "DFOP" & SFORB) {
-				k1 = coef(m)[["k1"]]
-				k2 = coef(m)[["k2"]]
-				g = coef(m)[["g"]]
-				parms[["SFORB"]] = 
-                                    list(parent.0 = coef(m)[["parent.0"]],
-					k1out = g * k1 + (1 - g) * k2,
-					k21 = k1 * k2 / (g * k1 + (1 - g) * k2),
-					k12 = (g * (1 - g) * (k1 - k2)^2) / (g * k1 + (1 - g) * k2))
-			}
-			n.parms = length(coef(m))
+      if (m$parent.0.fixed) {
+        parms[[kinmodel]] <- switch(kinmodel,
+          SFO = list(k = coef(m)[["k"]]))
+      } else {
+        parms[[kinmodel]] <- switch(kinmodel,
+          SFO = list(parent.0 = coef(m)[["parent.0"]], 
+                                      k = coef(m)[["k"]]),
+          FOMC = list(parent.0 = coef(m)[["parent.0"]],
+                                      alpha = coef(m)[["alpha"]],
+              beta = coef(m)[["beta"]]),
+          HS = list(parent.0 = coef(m)[["parent.0"]], 
+                                      k1 = coef(m)[["k1"]],
+              k2 = coef(m)[["k2"]], 
+                                      tb = coef(m)[["tb"]]),
+          DFOP = list(parent.0 = coef(m)[["parent.0"]],
+                                      k1 = coef(m)[["k1"]],
+              k2 = coef(m)[["k2"]], 
+                                      g = coef(m)[["g"]]))
+        if(kinmodel == "DFOP" & SFORB) {
+          k1 = coef(m)[["k1"]]
+          k2 = coef(m)[["k2"]]
+          g = coef(m)[["g"]]
+          parms[["SFORB"]] = 
+                                      list(parent.0 = coef(m)[["parent.0"]],
+            k1out = g * k1 + (1 - g) * k2,
+            k21 = k1 * k2 / (g * k1 + (1 - g) * k2),
+            k12 = (g * (1 - g) * (k1 - k2)^2) / (g * k1 + (1 - g) * k2))
+        }
+      }
+  		n.parms = length(coef(m))
 			f[[kinmodel]] = switch(kinmodel,
 				HS = function(t, x) {
 					(HS(t, coef(m)[["parent.0"]], 
@@ -75,7 +80,7 @@ kinresults <- function(kinfits, alpha = 0.05, SFORB=TRUE)
 			df[[kinmodel]] = n.times - n.parms
 			RSS[[kinmodel]] = sum(summary(m)$residuals^2)
 			DT50[[kinmodel]] = switch(kinmodel,
-					SFO = log(2)/coef(m)[["k"]],
+        SFO = log(2)/coef(m)[["k"]],
 				FOMC = coef(m)[["beta"]] * (2^(1/coef(m)[["alpha"]]) - 1),
 				HS = optimize(f[[kinmodel]], c(0, max(kindata$t)), x=50)$minimum,
 				DFOP = optimize(f[[kinmodel]], c(0, max(kindata$t)), x=50)$minimum)
