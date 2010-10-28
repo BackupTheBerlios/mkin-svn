@@ -20,8 +20,10 @@
 
 kinresults <- function(kinfits, alpha = 0.05, SFORB=TRUE)
 {
-	kindata <- data.frame(t = kinfits[[1]]$model$t, parent = kinfits[[1]]$model$parent)
-        kindata.means <- aggregate(kindata, list(kindata$t), mean)
+	kindata <- data.frame(
+    t = kinfits[[1]]$model$t, 
+    parent = kinfits[[1]]$model$parent)
+  kindata.means <- aggregate(kindata, list(kindata$t), mean)
 	kindata.means.mean <- mean(kindata.means$parent, na.rm=TRUE)
 	n.times <- length(kindata.means$parent)
 	parms <- list()
@@ -33,7 +35,7 @@ kinresults <- function(kinfits, alpha = 0.05, SFORB=TRUE)
 		m = kinfits[[kinmodel]]
 		if(class(m) == "nls") {
 			kindata.means$est <- predict(m, kindata.means)
-      if (m$parent.0.fixed) {
+      if (!"parent.0" %in% names(coef(m))) {
         parms[[kinmodel]] <- switch(kinmodel,
           SFO = list(k = coef(m)[["k"]]))
       } else {
@@ -56,10 +58,10 @@ kinresults <- function(kinfits, alpha = 0.05, SFORB=TRUE)
           k2 = coef(m)[["k2"]]
           g = coef(m)[["g"]]
           parms[["SFORB"]] = 
-                                      list(parent.0 = coef(m)[["parent.0"]],
-            k1out = g * k1 + (1 - g) * k2,
-            k21 = k1 * k2 / (g * k1 + (1 - g) * k2),
-            k12 = (g * (1 - g) * (k1 - k2)^2) / (g * k1 + (1 - g) * k2))
+            list(parent.0 = coef(m)[["parent.0"]],
+              k1out = g * k1 + (1 - g) * k2,
+              k21 = k1 * k2 / (g * k1 + (1 - g) * k2),
+              k12 = (g * (1 - g) * (k1 - k2)^2) / (g * k1 + (1 - g) * k2))
         }
       }
   		n.parms = length(coef(m))

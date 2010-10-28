@@ -25,45 +25,49 @@ kinreport <- function(kinobject, file = NA, vcov = FALSE, endpoint.digits = 1)
 	}
 
 	cat("Parent compound: ", kinobject$parent, "\n")
-        if (!is.null(kinobject$label)) cat("Label position:\t\t", kinobject$label, "\n")
+  if (!is.null(kinobject$label)) {
+    cat("Label position:\t\t", kinobject$label, "\n")
+  }
 	cat("Study type:      ", kinobject$type, "\n")
 	cat("System:          ", kinobject$system, "\n")
 	if (!is.null(kinobject$source)) {
-          cat("Source:          ", kinobject$source, "\n")
-        }
+    cat("Source:          ", kinobject$source, "\n")
+  }
 	cat("\n")
 	fit.names <- names(kinobject$fits)
 	for (kinmodel in fit.names)
 	{
-                m <- kinobject$fits[[kinmodel]]
-                if (!(class(m) == "try-error")) {
-                    cat("\n\n---\n")
-                    cat("Nonlinear least squares fit of the", kinmodel, "model\n")
-                    if(m$parent.0.fixed) cat("Initial value fixed to", m$parent.0.user, "\n")
-                    cat("\n")
-                    cat("Parameter estimation:\t")
-                    s <- summary(m)
-                    df <- s$df[2]
-                    p <- 1 - pt(s$parameters[,3], df = df)
-                    parms <- matrix(nrow = nrow(s$parameters), ncol=4)
-                    dimnames(parms) = list(rownames(s$parameters), 
-                      c("Estimate", "Std. Error", "t value", "Pr(>t)"))
-                    parms[, c(1,2,3)] <- s$parameters[,c(1,2,3)]
-                    parms[, 4] <- p
-                    cat("\n")
-                    print(parms, digits=3)
-                    cat("\n")
-                    if(vcov)
-                    {
-                        cat("Variance-covariance matrix:\n")
-                        print(vcov(m))
-                        cat("\n")
-                    }
-                    cat("Chi2 error estimation:\t", 
-                            round(100 * kinobject$results$stats[kinmodel, "err.min"], digits=2), 
-                            " %\n", sep="")
-                    cat("\n")
-                }
+    m <- kinobject$fits[[kinmodel]]
+    if (!(class(m) == "try-error")) {
+      cat("\n\n---\n")
+      cat("Nonlinear least squares fit of the", kinmodel, "model\n")
+      if (!"parent.0" %in% names(coef(m))) {
+        cat("Initial value fixed\n")
+      }
+      cat("\n")
+      cat("Parameter estimation:\t")
+      s <- summary(m)
+      df <- s$df[2]
+      p <- 1 - pt(s$parameters[,3], df = df)
+      parms <- matrix(nrow = nrow(s$parameters), ncol=4)
+      dimnames(parms) = list(rownames(s$parameters), 
+        c("Estimate", "Std. Error", "t value", "Pr(>t)"))
+      parms[, c(1,2,3)] <- s$parameters[,c(1,2,3)]
+      parms[, 4] <- p
+      cat("\n")
+      print(parms, digits=3)
+      cat("\n")
+      if(vcov)
+      {
+        cat("Variance-covariance matrix:\n")
+        print(vcov(m))
+        cat("\n")
+      }
+      cat("Chi2 error estimation:\t", 
+        round(100 * kinobject$results$stats[kinmodel, "err.min"], digits=2), 
+          " %\n", sep="")
+      cat("\n")
+    }
 	}
 	cat("\n\n---\n")
 	cat("Endpoint estimates\n\n")

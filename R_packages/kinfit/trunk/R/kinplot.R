@@ -25,9 +25,9 @@ kinplot <- function(kinobject,
 {
 	kindata <- na.omit(kinobject$data)
 	kinfits <- kinobject$fits
-        if (ylim[1] == "auto") ylim[1] <- 0
-        if (ylim[2] == "auto") ylim[2] <- max(kindata$parent)
-        ylim <- as.numeric(ylim)
+  if (ylim[1] == "auto") ylim[1] <- 0
+  if (ylim[2] == "auto") ylim[2] <- max(kindata$parent)
+  ylim <- as.numeric(ylim)
         
 	plot(kindata$t, kindata$parent,
 	  xlab = xlab,
@@ -42,14 +42,14 @@ kinplot <- function(kinobject,
 	{
 		m = kinfits[[kinmodel]]
 		if(class(m) == "nls") {
-      if (m$parent.0.fixed) {
+      if (!"parent.0" %in% names(coef(m))) {
         switch(kinmodel,
-          SFO = curve(SFO(x, 
-            m$parent.0.user,
-            coef(m)[["k"]]),
-            from = min(kindata$t), to = max(kindata$t), add=TRUE,
-            col = colors[[kinmodel]],
-            lty = ltys[[kinmodel]]))
+          SFO = lines(
+              t <- seq(min(kindata$t), max(kindata$t), length.out=500),
+              predict(m, 
+              newdata = data.frame(t),
+              col = colors[[kinmodel]],
+              type = ltys[[kinmodel]])))
       } else {
         switch(kinmodel,
           SFO = curve(SFO(x, 
