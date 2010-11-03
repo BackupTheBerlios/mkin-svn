@@ -301,6 +301,7 @@ mkinfit <- function(mkinmod, observed,
   fit$distimes <- data.frame(DT50 = rep(NA, length(obs_vars)), DT90 = rep(NA, length(obs_vars)), 
     row.names = obs_vars)
   fit$ff <- vector()
+  fit$SFORB <- vector()
   for (obs_var in obs_vars) {
     type = names(mkinmod$map[[obs_var]])[1]  
     if (type == "SFO") {
@@ -384,6 +385,9 @@ mkinfit <- function(mkinmod, observed,
       {
         fit$ff[[sub("k_", "", k_out_name)]] = parms.all[[k_out_name]] / k_1output
       }
+      # Return the eigenvalues for comparison with DFOP rate constants
+      fit$SFORB[[paste(obs_var, "b1", sep="_")]] = b1
+      fit$SFORB[[paste(obs_var, "b2", sep="_")]] = b2
     }
     fit$distimes[obs_var, ] = c(DT50, DT90)
   }
