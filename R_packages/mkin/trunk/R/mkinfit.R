@@ -223,6 +223,7 @@ mkinfit <- function(mkinmod, observed,
             out_transformed_plot[var] <- rowSums(out_plot[, mkinmod$map[[var]]])
           }
         }    
+        out_transformed_plot <<- out_transformed_plot
 
         plot(0, type="n", 
           xlim = range(observed$time), ylim = range(observed$value, na.rm=TRUE),
@@ -251,6 +252,9 @@ mkinfit <- function(mkinmod, observed,
   } 
   if (solution == "deSolve") {
     fit$mkindiff <- mkindiff
+  }
+  if (plot == TRUE) {
+    fit$out_transformed_plot = out_transformed_plot
   }
 
   # We also need various other information for summary and plotting
