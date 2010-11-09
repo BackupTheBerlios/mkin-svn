@@ -122,20 +122,23 @@ d2$name <- "m1"
 d2$value <- cumsum(c(0, 9.5, 12, 6.8, 2, 1.2, 0.2, -0.1, -0.5))
 d3 <- FOCUS_2006_C
 d3$name <- "m2"
-d3$value <- cumsum(c(0, 6.3, 7.2, 2.0, 1.0, -2, -3.5, -4, -4.5))
+d3$value <- cumsum(c(0, 6.3, 7.2, 3.0, 1.0, -3, -2.5, -1, -0.5))
 (observed <- rbind(d, d2, d3))
 
 FOMC <- mkinmod(parent = list(type="FOMC"))
 FOMC_SFO <- mkinmod(parent = list(type="FOMC", to = "m1"), m1 = list(type="SFO"))
 FOMC_SFO2 <- mkinmod(parent = list(type="FOMC", to = c("m1", "m2")),
   m1 = list(type = "SFO"), m2 = list(type="SFO"))
+FOMC_SFO_RB <- mkinmod(parent = list(type="FOMC", to = c("m1", "m2")),
+  m1 = list(type = "SFO"), m2 = list(type="SFORB"))
 
 summary(mkinfit(SFORB_SFO, observed, plot=TRUE)
 summary(mkinfit(SFO_SFO, observed, plot=TRUE))
 summary(mkinfit(FOMC, observed, plot=TRUE))
 fit <- mkinfit(FOMC_SFO, observed, plot=TRUE)
-fit <- mkinfit(FOMC_SFO, observed, parms.ini = c(1, 10, 0.1, 0.5), plot=TRUE)
-fit <- mkinfit(FOMC_SFO2, observed, parms.ini = c(1, 10, 0.1, 0.1, 0.5, 0.5), plot = TRUE)
+fit <- mkinfit(FOMC_SFO, observed, parms.ini = c(1, 10, 0.01, 0.5), plot=TRUE)
+fit <- mkinfit(FOMC_SFO2, observed, parms.ini = c(1, 10, 0.01, 0.01, 0.5, 0.5), plot = TRUE)
+fit <- mkinfit(FOMC_SFO_RB, observed, parms.ini = c(1, 2, 0.01, 0.01, 0.1, 0.001, 0.5, 0.5), plot = TRUE)
 summary(fit)
 
 schaefer07_complex_case <- data.frame(
