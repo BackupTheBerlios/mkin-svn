@@ -463,6 +463,7 @@ summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, ff = TRUE, cov
   ans$errmin <- object$errmin 
   if(distimes) ans$distimes <- object$distimes
   if(ff) ans$ff <- object$ff
+  if(!is.null(object$SFORB)) ans$SFORB <- object$SFORB
   class(ans) <- c("summary.mkinfit", "summary.modFit") 
   return(ans)  
 }
@@ -501,6 +502,12 @@ print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), .
   if(printff){
     cat("\nEstimated formation fractions:\n")
     print(data.frame(ff = x$ff), digits=digits,...)
+  }    
+
+  printSFORB <- !is.null(x$SFORB)
+  if(printSFORB){
+    cat("\nEstimated Eigenvalues of SFORB model(s):\n")
+    print(x$SFORB, digits=digits,...)
   }    
 
   printcor <- !is.null(x$cov.unscaled)
