@@ -463,7 +463,7 @@ summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, ff = TRUE, cov
   ans$errmin <- object$errmin 
   if(distimes) ans$distimes <- object$distimes
   if(ff) ans$ff <- object$ff
-  if(!is.null(object$SFORB)) ans$SFORB <- object$SFORB
+  if(length(object$SFORB) != 0) ans$SFORB <- object$SFORB
   class(ans) <- c("summary.mkinfit", "summary.modFit") 
   return(ans)  
 }
