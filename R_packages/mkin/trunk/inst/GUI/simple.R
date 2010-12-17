@@ -1,27 +1,6 @@
 # Work in progress - simple GUI for mkin
 w <- gwindow('Simple R GUI for kinetic evaluations', visible=FALSE) 
-
-# Handlers for the Project menu
-new.project.handler = function(h,...) gmessage("Called new project handler", parent=w)
-open.project.handler = function(h,...) gmessage("Called open project handler", parent=w)
-
-# Actions
-actionlist = list(
-  new = gaction(label="New", icon="new", 
-    handler = new.project.handler, parent = w),
-  open = gaction(label="Open", icon="open", 
-    handler = open.project.handler, parent = w)
-)
-
-# The menu bar
-menulist <- list(Project = list(
-  new = actionlist$new,
-  open = actionlist$open
-))
-
-mb = gmenu(menulist, cont=w)
-
-# Project definition
+# Project definition {{{
 pr <- gexpandgroup("Project", cont=w)
 
 n.observed <- 1
@@ -48,12 +27,17 @@ observed.gw <- gdf(
 
 addSpring(prg)
 addSpace(prg, 15)
-pr.ok <- gbutton("ok", 
+prf <- gfile("Project file in binary R format (preferably use .RData as extension)", 
+  container = prg)
+addSpring(prg)
+addSpace(prg, 15)
+pr.ok <- gbutton("save", 
   handler=function(h,...) {
-      galert(getwd())
+      galert(svalue(prf), parent=w)
     }, container=prg)
 
 visible(pr) <- TRUE
+# }}}
 
 # Dataset definition
 ds <- gexpandgroup("Datasets", cont=w)
@@ -74,3 +58,4 @@ mw <- gframe("Evaluations", cont=w)
 # Status bar
 gstatusbar("Powered by gWidgetsWWW", cont = w)
 visible(w) <- TRUE 
+# vim: set foldmethod=marker:
