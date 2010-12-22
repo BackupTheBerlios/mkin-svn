@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>
 
-kinreport <- function(kinobject, file = NA, vcov = FALSE, endpoint.digits = 1)
+kinreport <- function(kinobject, file = NA, data = TRUE, vcov = FALSE, endpoint.digits = 1)
 {
 	if (!is.na(file)) {
 		sink(file, split=TRUE)
@@ -33,7 +33,13 @@ kinreport <- function(kinobject, file = NA, vcov = FALSE, endpoint.digits = 1)
 	if (!is.null(kinobject$source)) {
     cat("Source:          ", kinobject$source, "\n")
   }
+  cat("kinfit version:  ", as.character(packageVersion("kinfit")), "\n")
 	cat("\n")
+  if (data) {
+    cat("Data:\n")
+    print(kinobject$data)
+    cat("\n")
+  }
 	fit.names <- names(kinobject$fits)
 	for (kinmodel in fit.names)
 	{

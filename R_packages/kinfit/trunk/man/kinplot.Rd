@@ -17,6 +17,7 @@ kinplot(kinobject, xlab = "Time [days]", ylab = "Parent [\% of applied radioacti
 	the type of the test system (\code{type}), 
 	the name of the specific test system used for generating this dataset
         (\code{system}), 
+  the input dataset (\code{data}),
 	the list of fitted kinetic models (\code{fits}), as returned by
         \code{\link{kinfit}}, and the list of results (\code{results}) 
         as returned by \code{\link{kinresults}}.
