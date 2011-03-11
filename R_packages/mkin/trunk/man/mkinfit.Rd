@@ -15,7 +15,7 @@ mkinfit(mkinmod, observed,
   state.ini = c(100, rep(0, length(mkinmod$diffs) - 1)), 
   lower = 0, upper = Inf, 
   fixed_parms = NULL, fixed_initials = names(mkinmod$diffs)[-1], 
-  eigen = TRUE,
+  eigen = FALSE,
   plot = FALSE, quiet = FALSE, err = NULL, weight = "none", 
   scaleVar = FALSE, 
   atol = 1e-6, ...)
@@ -65,7 +65,8 @@ mkinfit(mkinmod, observed,
   \item{eigen}{
     Should the solution of the system of differential equations be based on the 
     spectral decomposition of the coefficient matrix in cases that this is
-    possible?
+    possible? Be aware that the results may differ from the results returned using
+    the ode solver.
   }
   \item{plot}{
     Should the observed values and the numerical solutions be plotted at each stage
