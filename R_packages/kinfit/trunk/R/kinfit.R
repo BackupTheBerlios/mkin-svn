@@ -36,6 +36,7 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 	}
 
 	lmlogged = lm(log(parent) ~ t, data = kindata)
+  k.est = -coef(lmlogged)[["t"]]
 
 	for (kinmodel in kinmodels)
 	{
@@ -62,10 +63,8 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
               start = start.SFO,
               algorithm = algorithm), silent=TRUE)
         }
+      k.est = coef(kinfits$SFO)[["k"]]
 		}	
-		k.est = ifelse(is.na(coef(kinfits$SFO)[["k"]]),
-			-coef(lmlogged)[["t"]],
-			coef(kinfits$SFO)[["k"]])
 		if (kinmodel == "FOMC") {
 			if (is.na(start.FOMC$parent.0)) {
         start.FOMC$parent.0 = max(kindata$parent)

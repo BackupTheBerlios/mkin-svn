@@ -1,6 +1,6 @@
 # $Id$
 
-# Copyright (C) 2010 Johannes Ranke
+# Copyright (C) 2010-2011 Johannes Ranke
 # Contact: mkin-devel@lists.berlios.de
 
 # This file is part of the R package mkin
@@ -18,10 +18,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>
 
-mkin_long_to_wide <- function(long_data, time = "time")
+mkin_long_to_wide <- function(long_data, time = "time", outtime = "time")
 {
   colnames <- unique(long_data$name)
   wide_data <- data.frame(time = subset(long_data, name == colnames[1], time))
+  names(wide_data) <- outtime
   for (var in colnames) {
     wide_data[var] <- subset(long_data, name == var, value)
   }

@@ -2,18 +2,9 @@
 # Adapted from a version around 2.9 of the rcdk package by Rajarshi Guha
 if(require("RUnit", quietly=TRUE)) {
  
-  ## --- Setup ---
- 
-  pkg <- "mkin" # <-- Change to package name!
-  if(Sys.getenv("RCMDCHECK") == "FALSE") {
-    ## Path to unit tests for standalone running under Makefile (not R CMD check)
-    ## PKG/tests/../inst/unitTests
-    path <- file.path(getwd(), "..", "inst", "unitTests")
-  } else {
-    ## Path to unit tests for R CMD check
-    ## PKG.Rcheck/tests/../PKG/unitTests
-    path <- system.file(package=pkg, "unitTests")
-  }
+  pkg <- "mkin"
+  path <- system.file(package=pkg, "unitTests")
+
   cat("\nRunning unit tests\n")
   print(list(pkg=pkg, getwd=getwd(), pathToUnitTests=path))
  
