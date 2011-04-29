@@ -383,7 +383,7 @@ mkinfit <- function(mkinmod, observed,
       DT50.o <- optimize(f_50, c(0.01, max_DT))$minimum
       if (abs(DT50.o - max_DT) < 0.01) DT50 = NA else DT50 = DT50.o
       f_90 <- function(t) (SFORB_fraction(t) - 0.1)^2
-      DT90.o <- optimize(f_90, c(0.01, 1000))$minimum
+      DT90.o <- optimize(f_90, c(0.01, max_DT))$minimum
       if (abs(DT90.o - max_DT) < 0.01) DT90 = NA else DT90 = DT90.o
       for (k_out_name in k_out_names)
       {
