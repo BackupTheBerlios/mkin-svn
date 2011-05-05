@@ -99,8 +99,8 @@ mkinfit(mkinmod, observed,
   }
 }
 \value{
-    A list with "mkinfit" and "modFit" in the class attribute. Thus, at
-    present, a summary can be obtained by \code{\link{summary.modFit}}. 
+    A list with "mkinfit" and "modFit" in the class attribute. 
+    A summary can be obtained by \code{\link{summary.mkinfit}}. 
 }
 \author{
   Johannes Ranke <jranke@{harlan.com,uni-bremen.de}>
