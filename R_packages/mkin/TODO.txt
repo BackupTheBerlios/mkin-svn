@@ -1,3 +1,4 @@
+- Check for unsafe compound names containing underscores
 - More unit tests
 - Document validation against fits documented in chapter 13 of FOCUS (2006)
 - Reproduce example analyses (L1, L2, ...) in FOCUS (2006)

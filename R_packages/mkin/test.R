@@ -192,3 +192,22 @@ scaleVar = FALSE
 
 P <- c(state.ini.optim, parms.optim)
 fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = 0)
+
+mkinmod <- m.a.1
+observed <- d.a.1
+parms.ini = rep(0.01, length(mkinmod$parms))
+state.ini = c(100, rep(0, length(mkinmod$diffs) - 1))
+fixed_parms <- NULL
+fixed_initials = names(mkinmod$diffs)[-1]
+eigen = FALSE
+lower = 0
+upper = Inf
+plot = FALSE
+quiet = FALSE
+err = NULL
+weight = "none"
+scaleVar = FALSE
+atol = 1e-6
+
+P <- c(state.ini.optim, parms.optim)
+fit <- modFit(cost, c(state.ini.optim, parms.optim), lower = lower, upper = upper)

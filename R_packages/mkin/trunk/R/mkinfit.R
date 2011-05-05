@@ -58,15 +58,13 @@ mkinfit <- function(mkinmod, observed,
       names(state.ini.optim) <- paste(names(state.ini.optim), "0", sep="_")
   }
 
-
- # set upper limit for formation fractions to one if formation fractions are directly defined and if no user input for upper limit is given
+  # Set upper limit for formation fractions to one if formation fractions are
+  # directly defined and if no user input for upper limit is given
   if (all(upper==Inf) & any(grepl("f_", names(parms.ini)))==TRUE){
     upper=c( rep(Inf,length(parms.optim)))
     upper[grep("f_", names(parms.optim))]=1
     upper=c(rep(Inf, length(state.ini.optim)), upper)
   }
-
-
 
   # Decide if the solution of the model can be based on a simple analytical
   # formula, the spectral decomposition of the matrix (fundamental system)
@@ -226,7 +224,7 @@ mkinfit <- function(mkinmod, observed,
             parms = odeparms)
         }
         out_transformed_plot <- data.frame(time = out_plot[,"time"])
-        for (var in names(mkinmod$map)) {
+        for (var in obs_vars) {
           if((length(mkinmod$map[[var]]) == 1) || solution == "analytical") {
             out_transformed_plot[var] <- out_plot[, var]
           } else {
