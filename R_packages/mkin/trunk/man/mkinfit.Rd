@@ -35,8 +35,11 @@ mkinfit(mkinmod, observed,
     \code{\link{modFit}}.
   }
   \item{parms.ini}{
-    A named vector if initial values for the parameters, including both parameters to
+    A named vector if initial values for the parameters, including parameters to
     be optimised and potentially also fixed parameters as indicated by \code{fixed_parms}.
+    The default is to set the initial values to 0.1. The setting of the initial values for 
+    the parameters has a strong impart on performance and it lies in the responsibilty of the 
+    user to set sensible initial values.   
   }
   \item{state.ini}{
     A named vector of initial values for the state variables of the model. In case the 
@@ -50,9 +53,10 @@ mkinfit(mkinmod, observed,
     negative values to not make sense for the models currently created by \code{\link{mkinmod}}.
   }
   \item{upper}{
-    Upper bounds for the parameters, passed to \code{\link{modFit}}. Defaults to \code{Inf}. Setting
-    non-infinite upper bounds has a strong impact on performance, and using a method like "L-BFGS-B" (by 
-    specifying an additional \code{method} argument) is recommended.
+    Upper bounds for the parameters, passed to \code{\link{modFit}}. Defaults to \code{Inf} 
+    except for formation fraction parameters. Setting non-infinite upper bounds has a strong 
+    impact on performance, and using a method like "L-BFGS-B" (by specifying an additional 
+    \code{method} argument) is recommended.
   }
   \item{fixed_parms}{
     The names of parameters that should not be optimised but rather kept at the values
