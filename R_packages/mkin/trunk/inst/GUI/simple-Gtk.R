@@ -2,7 +2,8 @@
 require(gWidgets)
 options("guiToolkit"="RGtk2")
 
-w <- gwindow("Simple R GUI for kinetic evaluations")
+w <- gwindow("Simple R GUI for kinetic evaluations",
+  width=800, height=500)
 
 # Project definition expanding group
 pr <- gexpandgroup("Project definition", container=w)
@@ -11,7 +12,7 @@ n.observed <- 1
 max.n.observed <- 9
 observed.names = c("parent", paste("M", 1:(max.n.observed - 1), sep=""))
 
-prg <- ggroup(horizontal=FALSE, cont = pr)
+prg <- ggroup(horizontal=FALSE, cont = w)
 prl <- glayout(cont = prg)
 prl[1,1] <- glabel("Number of observed variables", cont=prl)
 prl[1,2] <- (n.observed.gw = gcombobox(
