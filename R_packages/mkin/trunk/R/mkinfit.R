@@ -477,7 +477,7 @@ summary.mkinfit <- function(object, data = TRUE, distimes = TRUE, ff = TRUE, cov
 }
 
 # Expanded from print.summary.modFit
-print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), tval = TRUE, ...) {
   cat("\nEquations:\n")
   print(noquote(as.character(x[["diffs"]])))
   df  <- x$df
@@ -491,7 +491,11 @@ print.summary.mkinfit <- function(x, digits = max(3, getOption("digits") - 3), .
   else print(x$fixed)
   
   cat("\nOptimised parameters:\n")
-  printCoefmat(x$par, digits = digits, ...)
+  if (tval) printCoefmat(x$par, digits = digits, ...)
+  else {
+    printCoefmat(x$par[,c(1,2,4)], cs.in = c(1,2), tst.ind = integer(0), 
+      P.values = TRUE, has.Pvalue = TRUE, digits = digits, ...)
+  }
 
   cat("\nResidual standard error:",
       format(signif(x$sigma, digits)), "on", rdf, "degrees of freedom\n")

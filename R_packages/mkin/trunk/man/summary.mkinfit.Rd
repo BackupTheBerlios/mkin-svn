@@ -12,7 +12,7 @@
 }
 \usage{
 \method{summary}{mkinfit}(object, data = TRUE, distimes = TRUE, ff = TRUE, cov = FALSE, ...)
-\method{print}{summary.mkinfit}(x, digits = max(3, getOption("digits") - 3), ...)
+\method{print}{summary.mkinfit}(x, digits = max(3, getOption("digits") - 3), tval = TRUE, ...)
 }
 
 \arguments{
@@ -36,6 +36,10 @@
 Passed to \code{\link{summary.modFit}}.  }
   \item{digits}{
   Number of digits to use for printing
+}
+  \item{tval}{
+  Should the test statistic of the t-test for parameter significance be
+  printed? Defaults to \code{TRUE}. Saves vertical space if set to \code{FALSE}.
 }
   \item{\dots}{
   optional arguments passed to methods like \code{print}.
