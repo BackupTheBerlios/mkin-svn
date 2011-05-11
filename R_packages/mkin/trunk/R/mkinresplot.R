@@ -23,8 +23,7 @@ mkinresplot <- function (object, obs_vars = vector(),
 	maxabs = "auto", legend= TRUE, lpos = "topright") 
 {
 	obs_vars_all <- as.character(unique(object$data$variable))
-	residuals_all <- object$data$residual
-	t_all <- object$data$time
+
 
   if (length(obs_vars) > 0){
       vars <- intersect(obs_vars_all, obs_vars)	
