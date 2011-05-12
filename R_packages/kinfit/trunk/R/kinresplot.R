@@ -25,7 +25,7 @@ kinresplot <- function(kinobject, kinmodel,
 	m <- kinobject$fits[[kinmodel]]
 	t <- m$model$t
 	residuals <- residuals(m)
-	if (maxabs == "auto") maxabs = max(abs(residuals))
+	if (maxabs == "auto") maxabs = max(abs(residuals), na.rm = TRUE)
 	plot(t, residuals,
 		xlab = xlab,
 		ylab = ylab,
