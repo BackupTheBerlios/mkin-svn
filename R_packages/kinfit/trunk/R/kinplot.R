@@ -19,6 +19,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>
 
 kinplot <- function(kinobject, 
+	main = "",
 	xlab = "Time [days]", ylab = "Parent [% of applied radioactivity]",
         ylim = c("auto", "auto"),
 	lpos = "topright")
@@ -30,6 +31,7 @@ kinplot <- function(kinobject,
   ylim <- as.numeric(ylim)
         
 	plot(kindata$t, kindata$parent,
+	  main = main,
 	  xlab = xlab,
 	  ylab = ylab,
 	  ylim = ylim
