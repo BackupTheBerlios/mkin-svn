@@ -7,3 +7,4 @@
 - Version numbers and timestamp in output
 - Integrate guessing of sensible starting parameters
 - Calculate confidence intervals for predictions (DT50 and DT90)
+- Output modelling endpoints

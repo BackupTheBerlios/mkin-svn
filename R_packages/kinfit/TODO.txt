@@ -1,3 +1,4 @@
 - Possibility to fix M0 (Done for SFO in version 1.06)
 - Improve treatment of failed fits (non-convergence)
-- Output time stamp and R + package version numbers
+- Output time stamp and R version number
+- Output modelling endpoints
