@@ -75,11 +75,23 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 			if (is.na(start.FOMC$beta)) {
 				start.FOMC$beta = start.FOMC$alpha / k.est 
 			}
-			kinfits[[kinmodel]] = try(
-				nls(parent ~ FOMC(t, parent.0, alpha, beta),
-					data = kindata, model = TRUE,
-					start = start.FOMC,
-          algorithm = algorithm), silent=TRUE)
+      if (parent.0.fixed)
+      {
+        #start.FOMC = start.FOMC[-1]
+        start.FOMC = list(alpha = start.FOMC$alpha, beta = start.FOMC$beta)
+        kinfits[[kinmodel]] = try(
+          nls(parent ~ FOMC(t, parent.0, alpha, beta),
+            data = kindata, model = TRUE,
+            start = start.FOMC,
+            algorithm = algorithm), silent=TRUE)
+      } else {
+        kinfits[[kinmodel]] = try(
+          nls(parent ~ FOMC(t, parent.0, alpha, beta),
+            data = kindata, model = TRUE,
+            start = start.FOMC,
+            algorithm = algorithm), silent=TRUE)
+
+      }
 		}	
 		if (kinmodel == "DFOP") {
 			if (is.na(start.DFOP$parent.0)) {
