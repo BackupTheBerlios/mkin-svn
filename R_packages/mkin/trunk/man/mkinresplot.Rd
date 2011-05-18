@@ -8,7 +8,9 @@
   observed variables from an mkinfit object.
 }
 \usage{
-  mkinresplot(object, obs_vars = vector(), xlab = "Time [days]", ylab = "Residual [\% of applied radioactivity]", maxabs = "auto", legend = TRUE, lpos = "topright")
+  mkinresplot(object, obs_vars = vector(), 
+    xlab = "Time [days]", ylab = "Residual [\% of applied radioactivity]", 
+    maxabs = "auto", legend = TRUE, lpos = "topright", ...)
 }
 \arguments{
   \item{object}{
@@ -34,6 +36,9 @@
   \item{lpos}{ 
     Where should the legend be placed? Default is "topright". Will be passed on to
 		\code{\link{legend}}. }
+  \item{\dots}{
+   further arguments passed to \code{\link{plot}}.
+}
 }
 \value{
   Nothing is returned by this function, as it is called for its side effect, namely to produce a plot.

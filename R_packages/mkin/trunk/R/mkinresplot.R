@@ -20,7 +20,7 @@
 
 mkinresplot <- function (object, obs_vars = vector(), 
   xlab = "Time [days]", ylab = "Residual [% of applied radioactivity]",
-	maxabs = "auto", legend= TRUE, lpos = "topright") 
+	maxabs = "auto", legend= TRUE, lpos = "topright", ...) 
 {
 	obs_vars_all <- as.character(unique(object$data$variable))
 
@@ -37,7 +37,7 @@ mkinresplot <- function (object, obs_vars = vector(),
  	names(col_obs) <- names(pch_obs) <- vars
 
   plot(0,  xlab = xlab, ylab = ylab, 
-       xlim = c(0, 1.1 * max(t_all)), ylim = c(-1.2 * maxabs, 1.2 * maxabs))
+       xlim = c(0, 1.1 * max(t_all)), ylim = c(-1.2 * maxabs, 1.2 * maxabs), ...)
 
 	for(var in vars){
 		residuals_plot <- subset(object$data, variable == var, c("time", "residual"))
