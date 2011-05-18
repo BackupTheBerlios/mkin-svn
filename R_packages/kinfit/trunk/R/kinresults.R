@@ -37,22 +37,24 @@ kinresults <- function(kinfits, alpha = 0.05, DTmax = 1000, SFORB=TRUE)
 			kindata.means$est <- predict(m, kindata.means)
       if (!"parent.0" %in% names(coef(m))) {
         parms[[kinmodel]] <- switch(kinmodel,
-          SFO = list(k = coef(m)[["k"]]))
+          SFO = list(k = coef(m)[["k"]]),
+          FOMC = list(alpha = coef(m)[["alpha"]],
+              beta = coef(m)[["beta"]]))
       } else {
         parms[[kinmodel]] <- switch(kinmodel,
           SFO = list(parent.0 = coef(m)[["parent.0"]], 
-                                      k = coef(m)[["k"]]),
+              k = coef(m)[["k"]]),
           FOMC = list(parent.0 = coef(m)[["parent.0"]],
-                                      alpha = coef(m)[["alpha"]],
+              alpha = coef(m)[["alpha"]],
               beta = coef(m)[["beta"]]),
           HS = list(parent.0 = coef(m)[["parent.0"]], 
-                                      k1 = coef(m)[["k1"]],
+              k1 = coef(m)[["k1"]],
               k2 = coef(m)[["k2"]], 
-                                      tb = coef(m)[["tb"]]),
+              tb = coef(m)[["tb"]]),
           DFOP = list(parent.0 = coef(m)[["parent.0"]],
-                                      k1 = coef(m)[["k1"]],
+              k1 = coef(m)[["k1"]],
               k2 = coef(m)[["k2"]], 
-                                      g = coef(m)[["g"]]))
+              g = coef(m)[["g"]]))
         if(kinmodel == "DFOP" & SFORB) {
           k1 = coef(m)[["k1"]]
           k2 = coef(m)[["k2"]]
@@ -96,7 +98,8 @@ kinresults <- function(kinfits, alpha = 0.05, DTmax = 1000, SFORB=TRUE)
 			err.min[[kinmodel]] <- kinerrmin(kinfits, kinmodel)
 		}
 	}
-	stats <- data.frame(n.times = n.times, df = df, mean.means = kindata.means.mean, 
+	stats <- data.frame(n.times = n.times, df = df, 
+    mean.means = kindata.means.mean, 
 		RSS = RSS, err.min = err.min)
 	results <- data.frame(DT50 = DT50, DT90 = DT90)
 	list(parms = parms, stats = stats, results = results)
