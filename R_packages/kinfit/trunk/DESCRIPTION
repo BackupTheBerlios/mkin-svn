@@ -1,8 +1,8 @@
 Package: kinfit
 Type: Package
 Title: Routines for fitting kinetic models to chemical degradation data
-Version: 1.1.01
-Date: 2011-05-13
+Version: 1.1.02
+Date: 2011-05-18
 Author: Johannes Ranke
 Maintainer: Johannes Ranke <jranke@users.berlios.de>
 Description: Simple calculation routines based on the FOCUS Kinetics 

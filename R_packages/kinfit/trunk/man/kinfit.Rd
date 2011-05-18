@@ -33,7 +33,7 @@ kinfit(kindata, kinmodels = c("SFO"), parent.0.user = NA, parent.0.fixed = FALSE
   \item{parent.0.fixed}{
     If TRUE, the initial value for the observed value will be fixed to the 
     value specified by \code{parent.0.user}. Only implemented for the 
-    \code{\link{SFO}} model.
+    \code{\link{SFO}} and \code{\link{FOMC}} models.
   }
   \item{start.SFO}{
     A list of starting parameters for fitting the \code{\link{SFO}} model,

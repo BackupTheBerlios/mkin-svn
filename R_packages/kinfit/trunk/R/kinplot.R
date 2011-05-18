@@ -35,11 +35,11 @@ kinplot <- function(kinobject,
 	  xlab = xlab,
 	  ylab = ylab,
 	  ylim = ylim
-        )
+  )
 	n.m <- length(kinfits)
 	colors <- ltys <- 1:n.m
 	names(colors) <- names(ltys) <- names(kinfits)
-        ltext <- paste(kinobject$parent, "measured")
+  ltext <- paste(kinobject$parent, "measured")
 	for (kinmodel in names(kinfits))
 	{
 		m = kinfits[[kinmodel]]
@@ -49,9 +49,16 @@ kinplot <- function(kinobject,
           SFO = lines(
               t <- seq(min(kindata$t), max(kindata$t), length.out=500),
               predict(m, 
-              newdata = data.frame(t),
+              newdata = data.frame(t)),
               col = colors[[kinmodel]],
-              type = ltys[[kinmodel]])))
+              lty = ltys[[kinmodel]]),
+          FOMC = lines(
+              t <- seq(min(kindata$t), max(kindata$t), length.out=500),
+              predict(m, 
+              newdata = data.frame(t)),
+              col = colors[[kinmodel]],
+              lty = ltys[[kinmodel]]))
+        ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
       } else {
         switch(kinmodel,
           SFO = curve(SFO(x, 
@@ -83,10 +90,10 @@ kinplot <- function(kinobject,
             from = min(kindata$t), to = max(kindata$t), add=TRUE,
             col = colors[[kinmodel]],
             lty = ltys[[kinmodel]]))
-            ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
+        ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
       }
 		} else {
-            ltext <- c(ltext, paste(kinmodel, "model failed"))
+        ltext <- c(ltext, paste(kinmodel, "model failed"))
             ltys[[kinmodel]] <- NA
 		} 
 	}

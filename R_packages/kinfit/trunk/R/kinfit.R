@@ -79,7 +79,6 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 			
       		if (parent.0.fixed)
       		{
-        			#start.FOMC = start.FOMC[-1]
         			start.FOMC = list(alpha = start.FOMC$alpha, beta = start.FOMC$beta)
 				
         			kinfits[[kinmodel]] = try(
