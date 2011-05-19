@@ -24,7 +24,6 @@ mkinresplot <- function (object, obs_vars = vector(),
 {
 	obs_vars_all <- as.character(unique(object$data$variable))
 
-
   if (length(obs_vars) > 0){
       vars <- intersect(obs_vars_all, obs_vars)	
   } else vars <- obs_vars_all
@@ -37,7 +36,8 @@ mkinresplot <- function (object, obs_vars = vector(),
  	names(col_obs) <- names(pch_obs) <- vars
 
   plot(0,  xlab = xlab, ylab = ylab, 
-       xlim = c(0, 1.1 * max(t_all)), ylim = c(-1.2 * maxabs, 1.2 * maxabs), ...)
+       xlim = c(0, 1.1 * max(object$data$time)), 
+       ylim = c(-1.2 * maxabs, 1.2 * maxabs), ...)
 
 	for(var in vars){
 		residuals_plot <- subset(object$data, variable == var, c("time", "residual"))
