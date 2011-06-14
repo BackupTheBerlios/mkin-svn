@@ -34,17 +34,19 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 	if (!is.na(parent.0.user)) {
 		start.SFO$parent.0 = parent.0.user
 		start.FOMC$parent.0 = parent.0.user
+		start.DFOP$parent.0 = parent.0.user
+		start.HS$parent.0 = parent.0.user
 	}
 
 	lmlogged = lm(log(parent) ~ t, data = kindata)
-  k.est = -coef(lmlogged)[["t"]]
+      k.est = -coef(lmlogged)[["t"]]
 
 	for (kinmodel in kinmodels)
 	{
 
 		if (kinmodel == "SFO") {
 			if (is.na(start.SFO$parent.0)) {
-        start.SFO$parent.0 = max(kindata$parent)
+        			start.SFO$parent.0 = max(kindata$parent)
 			}
 			if (is.na(start.SFO$k)) {
 				start.SFO$k = - coef(lmlogged)[["t"]]
@@ -109,11 +111,22 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 			if (is.na(start.DFOP$g)) {
 				start.DFOP$g = 0.5
 			}
-			kinfits[[kinmodel]] = try(
+			if (parent.0.fixed)
+      		{
+				start.DFOP = list(k1 = start.DFOP$k1, k2 = start.DFOP$k2, g = start.DFOP$g)
+
+				kinfits[[kinmodel]] = try(
+				nls(parent ~ DFOP(t, parent.0.user, k1, k2, g),
+					data = kindata, model = TRUE,
+					start = start.DFOP,
+          				algorithm = algorithm), silent=TRUE)
+			}else{
+				kinfits[[kinmodel]] = try(
 				nls(parent ~ DFOP(t, parent.0, k1, k2, g),
 					data = kindata, model = TRUE,
 					start = start.DFOP,
           				algorithm = algorithm), silent=TRUE)
+			}
 		}	
 		if (kinmodel == "HS") {
 			if (is.na(start.HS$parent.0)) {
@@ -128,11 +141,24 @@ kinfit <- function(kindata, kinmodels = c("SFO"),
 			if (is.na(start.HS$tb)) {
 				start.HS$tb = 0.05 * max(kindata$t)
 			}
-			kinfits[[kinmodel]] = try(
+			
+			if (parent.0.fixed)
+      		{		
+				
+				start.HS = list(k1 = start.HS$k1, k2 = start.HS$k2, tb = start.HS$tb)	
+
+				kinfits[[kinmodel]] = try(
+				nls(parent ~ HS(t, parent.0.user, k1, k2, tb),
+					data = kindata, model = TRUE,
+					start = start.HS,
+          				algorithm = algorithm), silent=TRUE)
+			}else{
+				kinfits[[kinmodel]] = try(
 				nls(parent ~ HS(t, parent.0, k1, k2, tb),
 					data = kindata, model = TRUE,
 					start = start.HS,
           				algorithm = algorithm), silent=TRUE)
+			}
 		}	
 	}
 	return(kinfits)		
