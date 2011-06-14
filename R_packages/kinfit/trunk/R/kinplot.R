@@ -58,32 +58,18 @@ kinplot <- function(kinobject,
               newdata = data.frame(t)),
               col = colors[[kinmodel]],
               lty = ltys[[kinmodel]]), 
- 	   
-		#if(FALSE){ 
-		#HS = curve(HS(x, 
-            #kinfits[[kinmodel]]$model[["parent.0.user"]], 
-            #coef(m)[["k1"]],
-            #coef(m)[["k2"]],
-            #coef(m)[["tb"]]),
-            #from = min(kindata$t), to = max(kindata$t), add=TRUE,
-            #col = colors[[kinmodel]],
-            #lty = ltys[[kinmodel]]),
-		#}
-	 
- 		HS = lines(
+ 	    HS = lines(
               t <- seq(min(kindata$t), max(kindata$t), length.out=500),
               predict(m, 
               newdata = data.frame(t)),
               col = colors[[kinmodel]],
               lty = ltys[[kinmodel]]), 
-          DFOP = curve(DFOP(x, 
-            kinfits[[kinmodel]]$model[["parent.0.user"]], 
-            coef(m)[["k1"]],
-            coef(m)[["k2"]],
-            coef(m)[["g"]]),
-            from = min(kindata$t), to = max(kindata$t), add=TRUE,
-            col = colors[[kinmodel]],
-            lty = ltys[[kinmodel]])
+          DFOP = lines(
+              t <- seq(min(kindata$t), max(kindata$t), length.out=500),
+              predict(m, 
+              newdata = data.frame(t)),
+              col = colors[[kinmodel]],
+              lty = ltys[[kinmodel]])
 		)
         ltext <- c(ltext, paste("Fitted", kinmodel, "model"))
       } else {
