@@ -34,6 +34,8 @@ kinreport <- function(kinobject, file = NA, data = TRUE, vcov = FALSE, endpoint.
     cat("Source:          ", kinobject$source, "\n")
   }
   cat("kinfit version:  ", as.character(packageVersion("kinfit")), "\n")
+  cat("R version:       ", paste(R.version$major, R.version$minor, sep="."), "\n")
+  cat("Report generated:", date(), "\n")
 	cat("\n")
   if (data) {
     cat("Data:\n")
@@ -48,7 +50,7 @@ kinreport <- function(kinobject, file = NA, data = TRUE, vcov = FALSE, endpoint.
       cat("\n\n---\n")
       cat("Nonlinear least squares fit of the", kinmodel, "model\n")
       if (!"parent.0" %in% names(coef(m))) {
-        cat("Initial value fixed\n")
+        cat(paste("Initial value of parent fixed to ", m$model$parent.0.user, "\n", sep=""))
       }
       cat("\n")
       cat("Parameter estimation:\t")
