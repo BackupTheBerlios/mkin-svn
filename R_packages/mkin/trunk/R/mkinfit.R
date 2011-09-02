@@ -1,6 +1,6 @@
 # $Id$
 
-# Copyright (C) 2010 Johannes Ranke
+# Copyright (C) 2010-2011 Johannes Ranke
 # Contact: mkin-devel@lists.berlios.de
 # The summary function is an adapted and extended version of summary.modFit
 # from the FME package, v 1.1 by Soetart and Petzoldt, which was in turn
