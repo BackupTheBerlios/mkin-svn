@@ -13,7 +13,7 @@ prl[1,1] <- glabel("Number of observed variables", cont=prl)
 prl[1,2] <- (n.observed.gw = gcombobox(
   1:max.n.observed, 
   handler = function(h, ...) {
-    n.observed <- svalue(n.observed.gw)
+    n.observed <<- svalue(n.observed.gw)
     filter.expression <- paste("^[1-", n.observed, "]$", sep="")
     observed.gw$filter("Index", filter.expression)
   },
@@ -25,7 +25,6 @@ observed.gw <- gdf(
   name = "Names of observed variables",
   width = 500, height=250, cont=prg)
 
-addSpring(prg)
 addSpace(prg, 15)
 prf <- gfile("Project file in binary R format (preferably use .RData as extension)", 
   container = prg)
@@ -35,6 +34,14 @@ pr.ok <- gbutton("save",
   handler=function(h,...) {
       galert(svalue(prf), parent=w)
     }, container=prg)
+
+gbutton("ok", handler = function(h, ...) {
+  observed <- observed.gw[1:n.observed,2]
+  save(observed, file="observed.RData")
+  visible(pr) <- FALSE
+  },
+  cont=prg
+)
 
 visible(pr) <- TRUE
 # }}}
