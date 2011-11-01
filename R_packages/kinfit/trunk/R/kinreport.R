@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>
 
-kinreport <- function(kinobject, file = NA, data = TRUE, vcov = FALSE, endpoint.digits = 1)
+kinreport <- function(kinobject, file = NA, data = TRUE, R2 = FALSE, vcov = FALSE, endpoint.digits = 1)
 {
 	if (!is.na(file)) {
 		sink(file, split=TRUE)
@@ -71,10 +71,15 @@ kinreport <- function(kinobject, file = NA, data = TRUE, vcov = FALSE, endpoint.
         print(vcov(m))
         cat("\n")
       }
-      cat("Chi2 error estimation:\t", 
+      cat("Chi2 error estimation: ", 
         round(100 * kinobject$results$stats[kinmodel, "err.min"], digits=2), 
           " %\n", sep="")
       cat("\n")
+      if(R2)
+      {
+        cat("Coefficient of determination R2: ",
+          round(kinobject$results$stats[kinmodel, "R2"], digits=3), "\n")
+      }
     }
 	}
 	cat("\n\n---\n")
