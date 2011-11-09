@@ -27,7 +27,7 @@ kinresults <- function(kinfits, alpha = 0.05, DTmax = 1000, SFORB=TRUE)
 	kindata.means.mean <- mean(kindata.means$parent, na.rm=TRUE)
 	n.times <- length(kindata.means$parent)
 	parms <- list()
-	df <- err.min <- RSS <- TSS <- RSS.means <- TSS.means <- vector()
+	df <- err.min <- R2 <- RSS <- TSS <- RSS.means <- TSS.means <- vector()
 	DT50 <- DT90 <- vector()
 	f <- list()
 	
@@ -132,7 +132,7 @@ kinresults <- function(kinfits, alpha = 0.05, DTmax = 1000, SFORB=TRUE)
 
       # Coefficient of determination calculated from residual sum of squares and totals sum of squares
       # so this r2 is what is called model efficiency in FOCUS kinetics (2006), p. 99
-      R2 = 1 - RSS[[kinmodel]]/TSS[[kinmodel]]
+      R2[[kinmodel]] = 1 - RSS[[kinmodel]]/TSS[[kinmodel]]
 
 		}
 	}
