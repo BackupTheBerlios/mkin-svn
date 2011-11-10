@@ -681,7 +681,7 @@ model are hardly distinguishable. As a consequence, the software packages
 strongly disagree especially on the model parameter $f$ specifying the
 distribution between the kinetic domains that are characterised by the 
 two kinetic constants. Again, the \Rpackage{kinfit} routine does not 
-show conversion for this model and this dataset (Table \ref{tab:vali.DFOP.A}).
+show convergence for this model and this dataset (Table \ref{tab:vali.DFOP.A}).
 
 Fitting the DFOP model with \Rpackage{kinfit} to dataset B yields results
 that are very close to the median of the results obtained by other packages, 
@@ -924,8 +924,9 @@ R^2 = 1 - RSS / TSS
 
 where RSS is the sum of squares of the residuals and TSS is the sum of squares
 of the deviations from the mean value is compared to the model efficiency EF
-calculated by KinGUI based on the same formula (FOCUS 2006, p. 99). This
-exercise was done for FOCUS datasets A to D only.
+calculated by KinGUI based on the same formula (FOCUS 2006, p. 99) as shown
+in Table \ref{tab:vali.R2}.  This exercise was done for FOCUS datasets A to D
+only.
 
 <<KinGUI_write, echo=FALSE>>=
 R2.SFO.kinfit <- R2.FOMC.kinfit <- array(dim = 4, 
